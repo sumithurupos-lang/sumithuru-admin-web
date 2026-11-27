@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Sumithuru Enterprises — Store Management System</title>
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232563eb%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2250%22 font-weight=%22bold%22 fill=%22white%22>SE</text></svg>">
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sumithuru Admin">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8'
+            },
+            slate: {
+              750: '#283548',
+              850: '#151f32',
+              900: '#0f172a',
+              950: '#090d16'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- HTML5 QR / Barcode Scanner -->
+  <script src="html5-qrcode.min.js"></script>
+  <!-- SheetJS for Excel (.xlsx) Export & Import -->
+  <script src="xlsx.full.min.js"></script>
+  <!-- Supabase JS Client for Cloud Sync & Realtime -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="stylesheet" href="styles.css?v=6.0">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden selection:bg-blue-600 selection:text-white pb-16 md:pb-0">
+
+  <!-- ================= FLOATING TOAST NOTIFICATION STACK ================= -->
+  <div id="toastNotificationStack" class="fixed top-4 right-4 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-3 sm:px-0" aria-live="polite"></div>
+
+  <!-- ================= MOBILE HEADER ================= -->
+  <header class="md:hidden flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
+    <div class="flex items-center space-x-2.5">
+      <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xs tracking-wider">
+        SE
+      </div>
+      <div>
+        <h1 id="headerStoreNameMobile" class="text-xs font-bold text-white tracking-tight leading-none uppercase">SUMITHURU ENTERPRISES</h1>
+        <p class="text-[10px] text-slate-400 mt-0.5">Store Back-Office</p>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <button onclick="toggleNotificationDropdown()" class="relative p-2 text-slate-300 hover:text-white bg-slate-800 border border-slate-700 rounded-lg" title="Notifications">
+        <i data-lucide="bell" class="w-4 h-4"></i>
+        <span id="notifBadgeMobile" class="hidden absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+      </button>
+
+      <button onclick="openBarcodeScanner('search')" class="p-2 text-slate-300 hover:text-white bg-slate-800 border border-slate-700 rounded-lg" title="Scan Barcode">
+        <i data-lucide="scan" class="w-4 h-4"></i>
+      </button>
+
+      <button id="mobileNavToggle" class="p-2 text-slate-300 hover:text-white bg-slate-800 border border-slate-700 rounded-lg" aria-label="Open Navigation">
+        <i data-lucide="menu" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= SIDEBAR NAVIGATION ================= -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 lg:w-72 bg-slate-900 border-r border-slate-800 flex flex-col transition-all duration-200 ease-in-out -translate-x-full md:translate-x-0 md:static md:h-screen select-none">
+    
+    <!-- Brand / Store Info -->
+    <div class="p-4 lg:p-5 border-b border-slate-800 flex items-center justify-between">
+      <div class="flex items-center space-x-3 overflow-hidden">
+        <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm tracking-wider flex-shrink-0">
+          SE
+        </div>
+        <div class="sidebar-text truncate">
+          <h2 id="headerStoreNameSidebar" class="text-sm font-bold text-white tracking-tight leading-tight truncate uppercase">SUMITHURU ENTERPRISES</h2>
+          <p class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+            <span>Main Branch (Colombo 03)</span>
+          </p>
+        </div>
+      </div>
+
+      <button id="closeSidebarBtn" class="md:hidden p-1.5 text-slate-400 hover:text-white rounded-lg">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <button id="desktopCollapseBtn" class="hidden md:flex p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition" title="Collapse Sidebar">
+        <i data-lucide="chevrons-left" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Navigation Menu Items -->
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-thin">
+      <a href="#dashboard" data-tab="dashboard" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium transition-colors bg-blue-600 text-white">
+        <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0"></i>
+        <span class="sidebar-text truncate">Dashboard</span>
+      </a>
+
+      <a href="#inventory" data-tab="inventory" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="boxes" class="w-4 h-4 flex-shrink-0 text-slate-400"></i>
+        <span class="sidebar-text">Inventory</span>
+        <span id="badgeLowStock" class="sidebar-text ml-auto px-2 py-0.5 text-[10px] font-semibold rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">2 Low</span>
+      </a>
+
+      <a href="#buying" data-tab="buying" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="truck" class="w-4 h-4 flex-shrink-0 text-slate-400"></i>
+        <span class="sidebar-text">Purchases & Bills</span>
+        <span id="badgeBuyingCount" class="sidebar-text ml-auto px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 border border-slate-700">6</span>
+      </a>
+
+      <a href="#sales" data-tab="sales" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="receipt" class="w-4 h-4 flex-shrink-0 text-slate-400"></i>
+        <span class="sidebar-text">Sales Register</span>
+      </a>
+
+      <a href="#terminals" data-tab="terminals" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="monitor" class="w-4 h-4 flex-shrink-0 text-slate-400"></i>
+        <span class="sidebar-text truncate">POS Terminals</span>
+        <span id="badgeActiveTerminals" class="sidebar-text ml-auto px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">3 Online</span>
+      </a>
+
+      <a href="#analytics" data-tab="analytics" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="bar-chart-3" class="w-4 h-4 flex-shrink-0 text-slate-400"></i>
+        <span class="sidebar-text truncate">Financial Reports</span>
+      </a>
+
+      <a href="#data" data-tab="data" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="database" class="w-4 h-4 flex-shrink-0 text-slate-400"></i>
+        <span class="sidebar-text truncate">Data & Backups</span>
+      </a>
+
+      <a href="#settings" data-tab="settings" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="settings" class="w-4 h-4 flex-shrink-0 text-slate-400"></i>
+        <span class="sidebar-text truncate">Store Settings</span>
+      </a>
+    </nav>
+
+    <!-- Barcode Camera Trigger in Sidebar -->
+    <div class="px-3 pb-3">
+      <button onclick="openBarcodeScanner('search')" class="w-full py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 hover:text-white text-xs font-medium flex items-center justify-center gap-2 transition">
+        <i data-lucide="scan" class="w-4 h-4 text-blue-400"></i>
+        <span class="sidebar-text">Scan Barcode (Camera)</span>
+      </button>
+    </div>
+
+    <!-- Owner Profile Footer Badge -->
+    <div id="ownerProfileBtn" onclick="openOwnerProfileModal()" class="p-3.5 border-t border-slate-800 bg-slate-900/90 hover:bg-slate-800 cursor-pointer flex items-center justify-between transition group" title="Store Owner Profile & Security">
+      <div class="flex items-center space-x-3 overflow-hidden">
+        <div id="ownerAvatarCircle" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-400 font-bold text-xs flex-shrink-0 group-hover:border-blue-500 transition-colors">
+          SJ
+        </div>
+        <div class="sidebar-text truncate">
+          <p id="ownerDisplayName" class="text-xs font-semibold text-white leading-tight truncate">Sunil Jayawardena</p>
+          <p id="ownerDisplayLocation" class="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>Overseas Admin (UK)</span>
+          </p>
+        </div>
+      </div>
+      <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 group-hover:text-slate-300 transition-colors flex-shrink-0"></i>
+    </div>
+  </aside>
+
+  <!-- Mobile Backdrop -->
+  <div id="mobileBackdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 hidden md:hidden"></div>
+
+  <!-- ================= MAIN WORKSPACE AREA ================= -->
+  <main class="flex-1 flex flex-col h-screen overflow-hidden min-w-0">
+    
+    <!-- Top Bar with Colombo/London Dual Clock -->
+    <header class="hidden md:flex items-center justify-between px-6 lg:px-8 py-3.5 bg-slate-900 border-b border-slate-800 flex-shrink-0">
+      <div class="flex items-center space-x-4 min-w-0">
+        <div class="min-w-0">
+          <h2 id="pageTitle" class="text-base font-bold text-white tracking-tight truncate">Store Overview & Operations</h2>
+          <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5 flex-wrap">
+            <span id="headerStoreNameTop" class="hidden"></span>
+            <span id="marketTimeDisplay" class="font-mono text-slate-300">
+              Colombo: 12:30:00 PM | London: 07:00:00 AM
+            </span>
+            <span>•</span>
+            <span id="cloudSyncBadgeTop" class="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-[11px] font-medium flex items-center gap-1.5 cursor-pointer hover:bg-slate-750 transition" onclick="switchTab('settings')" title="Click to view Cloud Synchronization Settings">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              <span>Local Mode</span>
+            </span>
+            <span>•</span>
+            <span class="text-emerald-400 font-medium flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              Terminals Online
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Toolbar -->
+      <div class="flex items-center space-x-2.5 flex-shrink-0">
+        <div id="liveSalePill" class="hidden items-center gap-2 px-3 py-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+          <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+          <span id="liveSalePillText">Terminal 01: Rs. 3,500</span>
+        </div>
+
+        <button onclick="openPurchaseModal()" class="btn-primary text-xs" title="Record Inward Stock / Supplier Bill">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          <span>Record Inward Bill</span>
+        </button>
+
+        <!-- Notification Center Bell & Dropdown -->
+        <div class="relative">
+          <button id="btnNotificationBell" onclick="toggleNotificationDropdown()" class="relative p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 rounded-lg transition" title="Live Sync & Sales Notifications">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+            <span id="notifBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-red-500/30">0</span>
+          </button>
+
+          <!-- Dropdown Activity Panel -->
+          <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-50 overflow-hidden ring-1 ring-slate-800">
+            <div class="px-4 py-3 bg-slate-850 border-b border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i data-lucide="bell" class="w-4 h-4 text-blue-400"></i>
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider">Live Activity Feed</h4>
+              </div>
+              <button onclick="clearNotifications()" class="text-[11px] text-slate-400 hover:text-red-400 transition">Clear all</button>
+            </div>
+            <div id="notificationList" class="max-h-72 overflow-y-auto divide-y divide-slate-800/60 p-1 scrollbar-thin">
+              <div class="p-6 text-center text-xs text-slate-500 flex flex-col items-center justify-center gap-2">
+                <i data-lucide="bell-off" class="w-5 h-5 text-slate-600"></i>
+                <span>No new notifications</span>
+              </div>
+            </div>
+            <div class="px-4 py-2.5 bg-slate-900/90 border-t border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
+              <span class="flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Supabase Live Sync active</span>
+              </span>
+              <span class="text-emerald-400/90 font-medium">Free Tier ($0/mo)</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="refreshDataBtn" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 rounded-lg transition" title="Refresh Data">
+          <i data-lucide="rotate-cw" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Scrollable Workspace Tab Container -->
+    <div class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-5 space-y-6 scrollbar-thin">
+
+      <!-- ================= TAB: DASHBOARD ================= -->
+      <section id="tab-dashboard" class="tab-pane space-y-5">
+        
+        <!-- Low Stock Alert Banner -->
+        <div id="urgentAlertBox" class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold flex-shrink-0">
+              <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <p class="text-xs sm:text-sm font-semibold text-white">2 Products Require Restocking</p>
+              <p class="text-xs text-slate-300">Anchor Fresh Milk 1L (4 left) and Keells Keeri Samba 5kg (3 left) are below reorder threshold.</p>
+            </div>
+          </div>
+          <button onclick="switchTab('inventory')" class="btn-secondary text-xs self-start sm:self-auto">
+            <span>Restock Catalog</span>
+            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </button>
+        </div>
+
+        <!-- KPI Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          
+          <!-- Card 1: Today's Revenue -->
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+              <span>Today's Total Sales</span>
+              <span class="p-1.5 rounded-md bg-slate-800 text-blue-400">
+                <i data-lucide="banknote" class="w-4 h-4"></i>
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-white tracking-tight font-mono" id="kpiRevenue">Rs. 184,520</span>
+              <span class="text-xs font-medium text-emerald-400">+14.2%</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Across 3 active store terminals</p>
+          </div>
+
+          <!-- Card 2: Net Profit -->
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+              <span>Estimated Net Profit</span>
+              <span class="p-1.5 rounded-md bg-slate-800 text-emerald-400">
+                <i data-lucide="trending-up" class="w-4 h-4"></i>
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-emerald-400 tracking-tight font-mono" id="kpiProfit">Rs. 42,850</span>
+              <span class="text-xs font-medium text-slate-300">23.2% Margin</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Cost of Goods: <span id="kpiCogs" class="font-mono text-slate-300">Rs. 141,670</span></p>
+          </div>
+
+          <!-- Card 3: Orders Count -->
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+              <span>Customer Bills Issued</span>
+              <span class="p-1.5 rounded-md bg-slate-800 text-slate-300">
+                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-white tracking-tight font-mono" id="kpiOrdersCount">128</span>
+              <span class="text-xs text-slate-400">Avg: <span id="kpiAvgBill" class="font-mono text-slate-200">Rs. 1,441</span></span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Pace: ~1 transaction every 3.8 mins</p>
+          </div>
+
+          <!-- Card 4: Terminal Status -->
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+              <span>Active POS Terminals</span>
+              <span class="p-1.5 rounded-md bg-slate-800 text-emerald-400">
+                <i data-lucide="monitor" class="w-4 h-4"></i>
+              </span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-white tracking-tight font-mono">3 / 3</span>
+              <span class="text-xs font-medium text-emerald-400">100% Online</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Cash in drawers: <span id="kpiCashDrawer" class="font-mono text-slate-200">Rs. 112,400</span></p>
+          </div>
+        </div>
+
+        <!-- Sales Chart & Recent Receipts Feed -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div class="lg:col-span-2 p-5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-semibold text-white">Today's Sales Hourly Distribution</h3>
+                <p class="text-xs text-slate-400">Gross revenue across operating hours</p>
+              </div>
+              <span class="badge-neutral">Live Register Stream</span>
+            </div>
+            <div class="relative w-full h-64 flex-1 min-h-[220px]">
+              <canvas id="hourlySalesChart"></canvas>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col h-full">
+            <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-800">
+              <h3 class="text-sm font-semibold text-white">Recent Counter Transactions</h3>
+              <span class="text-xs text-slate-400 font-mono" id="feedCount">Last 5 bills</span>
+            </div>
+
+            <div id="liveFeedContainer" class="flex-1 space-y-2.5 overflow-y-auto max-h-[320px] pr-1 scrollbar-thin">
+              <!-- Populated via JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal Shift Overview Cards -->
+        <div class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-semibold text-white">POS Terminal Register Breakdown</h3>
+              <p class="text-xs text-slate-400">Counter lane shifts and active cashier balances</p>
+            </div>
+            <button onclick="switchTab('terminals')" class="text-xs font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1">
+              <span>View Terminal Health</span>
+              <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="terminalOverviewCards">
+            <!-- Populated via JavaScript -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= TAB: INVENTORY & PRICING ================= -->
+      <section id="tab-inventory" class="tab-pane hidden space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold text-white">Inventory Catalog & Retail Margins</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Manage SKU barcodes, item names, supplier purchase costs, retail selling prices, and stock counts</p>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button onclick="openBarcodeScanner('search')" class="btn-secondary text-xs">
+              <i data-lucide="scan" class="w-4 h-4 text-blue-400"></i>
+              <span>Scan Barcode</span>
+            </button>
+
+            <button onclick="openProductEditModal(null)" class="btn-primary text-xs">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>Add New Product</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
+            <input type="text" id="inventorySearch" placeholder="Search by SKU / Barcode, Item Name, Category..." class="form-input pl-10 text-xs">
+          </div>
+          <div class="flex gap-2">
+            <select id="categoryFilter" class="form-input text-xs w-auto">
+              <option value="ALL">All Categories</option>
+              <option value="Dairy">Dairy</option>
+              <option value="Beverages">Beverages</option>
+              <option value="Snacks">Snacks & Biscuits</option>
+              <option value="Grains">Grains & Rice</option>
+              <option value="Personal Care">Personal Care</option>
+              <option value="Household">Household</option>
+            </select>
+            <button id="filterLowStockBtn" class="btn-secondary text-xs">
+              <i data-lucide="filter" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>Low Stock</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Inventory Table -->
+        <div class="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden">
+          <div class="overflow-x-auto scrollbar-thin">
+            <table class="w-full text-left data-table whitespace-nowrap min-w-[850px]">
+              <thead>
+                <tr>
+                  <th class="w-36">SKU / Barcode</th>
+                  <th class="min-w-[240px]">Item Name</th>
+                  <th class="w-32">Category</th>
+                  <th class="w-28 text-center">Stock On Hand</th>
+                  <th class="w-28 text-right">Unit Cost</th>
+                  <th class="w-28 text-right">Selling Price</th>
+                  <th class="w-28 text-right">Unit Profit</th>
+                  <th class="w-24 text-right">Margin %</th>
+                  <th class="w-24 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB: PURCHASES & INWARD BILLS ================= -->
+      <section id="tab-buying" class="tab-pane hidden space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold text-white">Stock Procurement & Supplier Bills</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Record incoming supplier batches, verify invoice costs, and attach photographic bill receipts</p>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button onclick="openPurchaseModal()" class="btn-primary text-xs">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>Record Inward Stock / Bill</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary KPIs -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400 font-medium">Total Stock Received (This Month)</span>
+            <p class="text-xl font-bold text-white font-mono mt-1" id="kpiTotalPurchases">Rs. 485,200</p>
+            <p class="text-xs text-slate-400 mt-0.5" id="kpiPurchaseOrdersCount">6 Purchase Invoices</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400 font-medium">Stored Bill Photos</span>
+            <p class="text-xl font-bold text-blue-400 font-mono mt-1" id="kpiBillPhotosCount">6 Photos</p>
+            <p class="text-xs text-slate-400 mt-0.5">Attached paper invoice proofs</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400 font-medium">Inventory Synchronization</span>
+            <p class="text-xl font-bold text-emerald-400 font-mono mt-1">Automatic</p>
+            <p class="text-xs text-slate-400 mt-0.5">Stock increases upon saving bill</p>
+          </div>
+        </div>
+
+        <!-- Purchases Table -->
+        <div class="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden">
+          <div class="overflow-x-auto scrollbar-thin">
+            <table class="w-full text-left data-table whitespace-nowrap min-w-[780px]">
+              <thead>
+                <tr>
+                  <th>Date & Time</th>
+                  <th>Invoice / PO #</th>
+                  <th>Supplier / Vendor</th>
+                  <th>Item & Qty Received</th>
+                  <th class="text-right">Total Inward Cost</th>
+                  <th class="text-center">Bill Photo</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="purchasesTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB: SALES REGISTER ================= -->
+      <section id="tab-sales" class="tab-pane hidden space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold text-white">Sales Transactions & Receipts</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Complete chronological ledger of all customer transactions across all store terminals</p>
+          </div>
+          <button onclick="exportSalesExcel()" class="btn-secondary text-xs">
+            <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-400"></i>
+            <span>Export Sales to Excel</span>
+          </button>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input type="text" id="salesSearch" placeholder="Search by Invoice #, Customer name, Phone..." class="form-input text-xs flex-1">
+          <select id="terminalFilter" class="form-input text-xs w-auto">
+            <option value="ALL">All Terminals</option>
+            <option value="Terminal 01">Terminal 01</option>
+            <option value="Terminal 02">Terminal 02</option>
+            <option value="Terminal 03">Terminal 03</option>
+          </select>
+          <select id="paymentMethodFilter" class="form-input text-xs w-auto">
+            <option value="ALL">All Payments</option>
+            <option value="Cash">Cash</option>
+            <option value="Card">Visa / MasterCard</option>
+            <option value="QR">LankaQR</option>
+          </select>
+        </div>
+
+        <!-- Sales Ledger Table -->
+        <div class="rounded-xl bg-slate-900 border border-slate-800 overflow-hidden">
+          <div class="overflow-x-auto scrollbar-thin">
+            <table class="w-full text-left data-table whitespace-nowrap min-w-[760px]">
+              <thead>
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Timestamp</th>
+                  <th>Terminal / Cashier</th>
+                  <th>Customer</th>
+                  <th>Items Sold</th>
+                  <th>Payment</th>
+                  <th class="text-right">Total Amount</th>
+                  <th class="text-right text-emerald-400">Net Profit</th>
+                  <th class="text-center">Receipt</th>
+                </tr>
+              </thead>
+              <tbody id="salesTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB: POS TERMINALS ================= -->
+      <section id="tab-terminals" class="tab-pane hidden space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold text-white">Store Counter Terminals & Hardware</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Monitor active counter lanes, cashier shift drawers, and network heartbeat</p>
+          </div>
+          <span class="badge-neutral">Auto-pinging every 10s</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="detailedTerminalGrid">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div class="p-5 rounded-xl bg-slate-900 border border-slate-800">
+          <h4 class="text-sm font-semibold text-white mb-3">Shift Financial Reconciliation</h4>
+          <div class="overflow-x-auto scrollbar-thin">
+            <table class="w-full text-left data-table whitespace-nowrap min-w-[650px]">
+              <thead>
+                <tr>
+                  <th>Terminal</th>
+                  <th>Cashier</th>
+                  <th>Sales Count</th>
+                  <th>Cash in Drawer</th>
+                  <th>Card / QR Total</th>
+                  <th>Gross Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="terminalTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB: FINANCIAL REPORTS & ITEM-LEVEL MARGINS ================= -->
+      <section id="tab-analytics" class="tab-pane hidden space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold text-white">Item-Level Financial Reports & Profitability</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Analyze units sold, gross revenue, supplier acquisition costs, and net margins across custom timeframes</p>
+          </div>
+
+          <!-- Variable Period Selector -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-medium text-slate-400">Period:</span>
+            <select id="reportPeriodSelect" class="form-input text-xs w-auto font-medium">
+              <option value="today">Today (Live)</option>
+              <option value="yesterday">Yesterday</option>
+              <option value="7days" selected>Last 7 Days (This Week)</option>
+              <option value="30days">Last 30 Days (This Month)</option>
+              <option value="all">All Time History</option>
+            </select>
+            <button onclick="exportItemPerformanceExcel()" class="btn-secondary text-xs">
+              <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
+              <span>Export Report</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Period Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400 font-medium">Gross Revenue in Period</span>
+            <p class="text-xl font-bold text-white font-mono mt-1" id="repPeriodRevenue">Rs. 842,500</p>
+            <span class="text-xs text-emerald-400 font-medium">+18.4% vs previous</span>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400 font-medium">Cost of Goods Sold (COGS)</span>
+            <p class="text-xl font-bold text-slate-300 font-mono mt-1" id="repPeriodCogs">Rs. 648,200</p>
+            <span class="text-xs text-slate-400">Inventory cost</span>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400 font-medium">Net Gross Profit</span>
+            <p class="text-xl font-bold text-emerald-400 font-mono mt-1" id="repPeriodProfit">Rs. 194,300</p>
+            <span class="text-xs text-emerald-400 font-medium" id="repPeriodMargin">23.1% Margin</span>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400 font-medium">Total Units Sold</span>
+            <p class="text-xl font-bold text-blue-400 font-mono mt-1" id="repPeriodUnits">584 Units</p>
+            <span class="text-xs text-slate-400">Across all categories</span>
+          </div>
+        </div>
+
+        <!-- Distribution Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col">
+            <h4 class="text-sm font-semibold text-white mb-1">Sales by Product Category</h4>
+            <p class="text-xs text-slate-400 mb-4">Proportion of gross revenue per store aisle</p>
+            <div class="relative w-full h-64 flex-1 min-h-[220px]">
+              <canvas id="categoryPieChart"></canvas>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col">
+            <h4 class="text-sm font-semibold text-white mb-1">Payment Method Distribution</h4>
+            <p class="text-xs text-slate-400 mb-4">Cash drawer vs digital LankaQR and Card transactions</p>
+            <div class="relative w-full h-64 flex-1 min-h-[220px]">
+              <canvas id="paymentPieChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item-by-Item Deep Profitability Table -->
+        <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h4 class="text-sm font-semibold text-white">Item-by-Item Performance Matrix</h4>
+              <p class="text-xs text-slate-400">Click any product row to view price change history and sales velocity</p>
+            </div>
+            
+            <div class="flex gap-2 flex-wrap">
+              <div class="relative">
+                <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400"></i>
+                <input type="text" id="reportItemSearch" placeholder="Search item or SKU..." class="form-input pl-9 text-xs">
+              </div>
+              <select id="reportItemSort" class="form-input text-xs w-auto">
+                <option value="profit">Sort by Most Profitable</option>
+                <option value="units">Sort by Units Sold</option>
+                <option value="revenue">Sort by Highest Revenue</option>
+                <option value="margin">Sort by Margin %</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto scrollbar-thin">
+            <table class="w-full text-left data-table whitespace-nowrap min-w-[850px]">
+              <thead>
+                <tr>
+                  <th>SKU</th>
+                  <th>Product Title</th>
+                  <th>Category</th>
+                  <th class="text-center">Units Sold</th>
+                  <th class="text-right">Gross Revenue</th>
+                  <th class="text-right">Cost (COGS)</th>
+                  <th class="text-right text-emerald-400">Net Profit</th>
+                  <th class="text-right">Margin %</th>
+                  <th class="text-center">Insights</th>
+                </tr>
+              </thead>
+              <tbody id="reportItemTableBody">
+                <!-- Dynamically populated via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB: DATA & BACKUPS ================= -->
+      <section id="tab-data" class="tab-pane hidden space-y-5">
+        <div>
+          <h3 class="text-base font-bold text-white">Data Export & System Backup Facility</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Export operational spreadsheets and create full database backups matching your Windows POS app</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          
+          <!-- 1. Excel Export -->
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center gap-2.5 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center font-bold">
+                  <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-white">Export Worksheets to Excel (.xlsx)</h4>
+                  <p class="text-xs text-slate-400">Formatted spreadsheets preserving barcode text and margin numbers</p>
+                </div>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Download formatted `.xlsx` spreadsheets for inventory audits, accountant tax reviews, and supplier price analysis.
+              </p>
+            </div>
+
+            <div class="space-y-2 pt-3 border-t border-slate-800">
+              <button onclick="exportInventoryExcel()" class="w-full btn-secondary text-xs justify-between">
+                <span class="flex items-center gap-2">
+                  <i data-lucide="boxes" class="w-4 h-4 text-blue-400"></i>
+                  <span>Export Inventory Catalog (.xlsx)</span>
+                </span>
+                <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
+              </button>
+
+              <button onclick="exportSalesExcel()" class="w-full btn-secondary text-xs justify-between">
+                <span class="flex items-center gap-2">
+                  <i data-lucide="receipt" class="w-4 h-4 text-slate-300"></i>
+                  <span>Export Sales & Cash Bills (.xlsx)</span>
+                </span>
+                <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
+              </button>
+
+              <button onclick="exportPurchasesExcel()" class="w-full btn-secondary text-xs justify-between">
+                <span class="flex items-center gap-2">
+                  <i data-lucide="truck" class="w-4 h-4 text-amber-400"></i>
+                  <span>Export Inward Buying Logs (.xlsx)</span>
+                </span>
+                <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Excel Import -->
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center gap-2.5 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-blue-500/15 text-blue-400 flex items-center justify-center font-bold">
+                  <i data-lucide="upload" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold text-white">Import Products from Excel</h4>
+                  <p class="text-xs text-slate-400">Bulk upload or update catalog prices and stock counts from spreadsheet</p>
+                </div>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Upload a `.xlsx` or `.csv` spreadsheet with columns: <code>SKU, Name, CostPrice, SellPrice, Stock, Category</code>.
+              </p>
+            </div>
+
+            <!-- Upload Dropzone -->
+            <div class="border border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-5 text-center cursor-pointer transition bg-slate-950/40 space-y-1.5" onclick="document.getElementById('excelImportFile').click()">
+              <input type="file" id="excelImportFile" accept=".xlsx,.xls,.csv" class="hidden">
+              <i data-lucide="file-up" class="w-6 h-6 mx-auto text-blue-400"></i>
+              <p class="text-xs font-semibold text-white">Click or drag & drop Excel / CSV file</p>
+              <p class="text-[11px] text-slate-400">Automatically matches SKUs and updates existing prices</p>
+            </div>
+
+            <div id="importStatusBox" class="hidden p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-400 font-medium">
+              <span id="importStatusText">Importing file...</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Full Database Backup & Restore -->
+        <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center font-bold">
+              <i data-lucide="database" class="w-4 h-4 text-blue-400"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold text-white">Complete System Backup & Disaster Recovery</h4>
+              <p class="text-xs text-slate-400">One-click snapshot containing all products, attached bill pictures, sales records, and settings</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between space-y-3">
+              <div>
+                <h5 class="text-xs font-semibold text-white">1. Create System Backup (.posbackup)</h5>
+                <p class="text-xs text-slate-400 mt-1">Generates an archive snapshot of all store inventory, sales, procurement logs, and bill photo scans.</p>
+              </div>
+              <button onclick="downloadFullDatabaseBackup()" class="btn-primary text-xs w-full">
+                <i data-lucide="download-cloud" class="w-4 h-4"></i>
+                <span>Download Database Backup</span>
+              </button>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between space-y-3">
+              <div>
+                <h5 class="text-xs font-semibold text-white">2. Restore Database from Backup File</h5>
+                <p class="text-xs text-slate-400 mt-1">Restore your catalog, buying history, and store configuration from a previous `.posbackup` snapshot.</p>
+              </div>
+              <input type="file" id="databaseRestoreFileInput" accept=".json,.posbackup" class="hidden">
+              <button onclick="document.getElementById('databaseRestoreFileInput').click()" class="btn-secondary text-xs w-full">
+                <i data-lucide="refresh-cw" class="w-4 h-4 text-blue-400"></i>
+                <span>Select Backup File to Restore</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= TAB: STORE SETTINGS ================= -->
+      <section id="tab-settings" class="tab-pane hidden space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white">Store Identity & Receipt Printer Settings</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Configure store information, 80mm/58mm thermal receipt layout, and sales tax rules</p>
+          </div>
+          <button type="button" onclick="saveStoreSettingsForm()" class="btn-primary text-xs">
+            Save Settings
+          </button>
+        </div>
+
+        <form id="storeSettingsForm" class="space-y-5">
+          <!-- 1. Store Identity -->
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
+            <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="store" class="w-4 h-4 text-blue-400"></i>
+              <span>Business Profile</span>
+            </h4>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">Supermarket / Business Name *</label>
+                <input type="text" id="setStoreName" required class="form-input text-xs font-semibold">
+              </div>
+              <div>
+                <label class="form-label">Business Tax / TIN Registration #</label>
+                <input type="text" id="setTaxId" class="form-input text-xs font-mono">
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label">Store Address (Appears on Receipts)</label>
+              <input type="text" id="setAddress" class="form-input text-xs">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">Store Phone Number</label>
+                <input type="text" id="setPhone" class="form-input text-xs">
+              </div>
+              <div>
+                <label class="form-label">Support Email</label>
+                <input type="email" id="setEmail" class="form-input text-xs">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Thermal Receipt Formatting -->
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
+            <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="printer" class="w-4 h-4 text-blue-400"></i>
+              <span>Thermal Receipt Rules (80mm / 58mm)</span>
+            </h4>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="form-label">Receipt Paper Width</label>
+                <select id="setPaperWidth" class="form-input text-xs">
+                  <option value="80mm">80mm (Standard POS Counter)</option>
+                  <option value="58mm">58mm (Compact Mobile POS)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label">Border Line Style</label>
+                <select id="setBorderStyle" class="form-input text-xs">
+                  <option value="Dashed">Dashed Border (Standard)</option>
+                  <option value="Solid">Solid Border</option>
+                  <option value="Double">Double Border</option>
+                  <option value="Dotted">Dotted Border</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label">Header Alignment</label>
+                <select id="setHeaderAlign" class="form-input text-xs">
+                  <option value="Center">Center Aligned</option>
+                  <option value="Left">Left Aligned</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              <label class="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer">
+                <input type="checkbox" id="setShowTaxId" class="w-4 h-4 rounded text-blue-600 focus:ring-0">
+                <span class="text-xs text-slate-200">Print Tax ID / TIN on Customer Receipts</span>
+              </label>
+
+              <label class="flex items-center gap-3 p-3 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer">
+                <input type="checkbox" id="setShowAuthBarcode" class="w-4 h-4 rounded text-blue-600 focus:ring-0">
+                <span class="text-xs text-slate-200">Print Verification Barcode on Receipt Footer</span>
+              </label>
+            </div>
+
+            <div>
+              <label class="form-label">Receipt Footer Note</label>
+              <textarea id="setReceiptFooter" rows="2" class="form-input text-xs"></textarea>
+            </div>
+          </div>
+
+          <!-- 3. Currency & Taxes -->
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
+            <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-400"></i>
+              <span>Currency & Tax Rates</span>
+            </h4>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="form-label">Currency Symbol</label>
+                <input type="text" id="setCurrencySymbol" class="form-input text-xs font-mono">
+              </div>
+              <div>
+                <label class="form-label">Default Sales Tax Rate (%)</label>
+                <input type="number" step="0.1" min="0" id="setDefaultTax" class="form-input text-xs font-mono">
+              </div>
+              <div>
+                <label class="form-label">Preset Quick Discount Buttons (%)</label>
+                <input type="text" id="setPresetDiscounts" placeholder="e.g. 5, 10, 15, 20" class="form-input text-xs font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Cloud Synchronization & Supabase Connection -->
+          <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+                <i data-lucide="cloud" class="w-4 h-4 text-sky-400"></i>
+                <span>☁️ Supabase Cloud Synchronization & Realtime Sync</span>
+              </h4>
+              <span id="supabaseStatusBadge" class="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                <span>Standalone Demo Mode (Local Storage)</span>
+              </span>
+            </div>
+
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Connect this Web Admin Hub directly to your free Supabase PostgreSQL cloud database. Sales completed on your Windows POS counters in Sri Lanka will stream live to this dashboard in real-time, and any inventory or price changes you make here will automatically sync down to the counter PCs.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">Supabase Project URL *</label>
+                <input type="url" id="setSupabaseUrl" placeholder="https://your-project-id.supabase.co" class="form-input text-xs font-mono">
+              </div>
+              <div>
+                <label class="form-label">Supabase Anon Public API Key *</label>
+                <input type="password" id="setSupabaseAnonKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="form-input text-xs font-mono">
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <button type="button" onclick="testAndConnectSupabase()" class="btn-primary text-xs flex items-center gap-2">
+                <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                <span>Test Connection & Sync Cloud</span>
+              </button>
+
+              <button type="button" onclick="openSqlModal()" class="btn-secondary text-xs flex items-center gap-2">
+                <i data-lucide="file-code" class="w-3.5 h-3.5 text-blue-400"></i>
+                <span>View / Copy SQL Setup Script</span>
+              </button>
+
+              <button type="button" onclick="disconnectSupabase()" class="px-3 py-2 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition" title="Disconnect and return to local demo data">
+                Disconnect Cloud
+              </button>
+            </div>
+
+            <div id="supabaseFeedbackMsg" class="hidden text-xs p-3 rounded-lg"></div>
+          </div>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ================= MOBILE BOTTOM NAVIGATION ================= -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-900 border-t border-slate-800 z-40 flex items-center justify-around px-2 py-2">
+    <button onclick="switchTab('dashboard')" class="mobile-nav-btn flex flex-col items-center justify-center p-1.5 rounded-lg text-blue-400" data-tab="dashboard">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      <span class="text-[10px] font-medium mt-1">Live</span>
+    </button>
+    <button onclick="switchTab('inventory')" class="mobile-nav-btn flex flex-col items-center justify-center p-1.5 rounded-lg text-slate-400" data-tab="inventory">
+      <i data-lucide="boxes" class="w-5 h-5"></i>
+      <span class="text-[10px] font-medium mt-1">Items</span>
+    </button>
+    <button onclick="switchTab('buying')" class="mobile-nav-btn flex flex-col items-center justify-center p-1.5 rounded-lg text-slate-400" data-tab="buying">
+      <i data-lucide="truck" class="w-5 h-5"></i>
+      <span class="text-[10px] font-medium mt-1">Buying</span>
+    </button>
+    <button onclick="switchTab('sales')" class="mobile-nav-btn flex flex-col items-center justify-center p-1.5 rounded-lg text-slate-400" data-tab="sales">
+      <i data-lucide="receipt" class="w-5 h-5"></i>
+      <span class="text-[10px] font-medium mt-1">Sales</span>
+    </button>
+    <button onclick="switchTab('analytics')" class="mobile-nav-btn flex flex-col items-center justify-center p-1.5 rounded-lg text-slate-400" data-tab="analytics">
+      <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+      <span class="text-[10px] font-medium mt-1">Reports</span>
+    </button>
+  </nav>
+
+  <!-- ================= MODAL: OWNER PROFILE & SECURITY ================= -->
+  <div id="ownerProfileModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-750 w-full max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh]">
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-400 font-bold text-xs">
+            SJ
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-white">Owner Profile & Overseas Settings</h3>
+            <p class="text-[11px] text-slate-400">Credentials and abroad location synchronization</p>
+          </div>
+        </div>
+        <button onclick="closeOwnerProfileModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="ownerProfileForm" class="p-5 space-y-4 overflow-y-auto scrollbar-thin">
+        <div>
+          <label class="form-label">Full Name *</label>
+          <input type="text" id="profOwnerName" required placeholder="Sunil Jayawardena" class="form-input text-xs font-medium">
+        </div>
+
+        <div>
+          <label class="form-label">Email / Login ID *</label>
+          <input type="email" id="profOwnerEmail" required placeholder="owner@sumithuru.lk" class="form-input text-xs">
+        </div>
+
+        <div>
+          <label class="form-label">Overseas Contact / WhatsApp</label>
+          <input type="text" id="profOwnerPhone" placeholder="+44 7700 900077" class="form-input text-xs font-mono">
+        </div>
+
+        <div>
+          <label class="form-label">Current Overseas Location / City</label>
+          <input type="text" id="profOwnerLocation" placeholder="London, United Kingdom (GMT)" class="form-input text-xs">
+        </div>
+
+        <div>
+          <label class="form-label">Admin Security PIN</label>
+          <input type="password" id="profOwnerPin" placeholder="••••••••" class="form-input text-xs font-mono">
+          <p class="text-[10px] text-slate-400 mt-1">Secures confidential gross margin and supplier cost figures from counter cashiers.</p>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeOwnerProfileModal()" class="btn-secondary text-xs">
+            Cancel
+          </button>
+          <button type="submit" class="btn-primary text-xs">
+            Save Profile
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ITEM DEEP INSIGHTS & PRICE HISTORY ================= -->
+  <div id="itemInsightsModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-750 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh]">
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900">
+        <div>
+          <h3 id="insItemTitle" class="text-sm font-semibold text-white">Product Performance & Profitability</h3>
+          <p id="insItemSku" class="text-xs text-blue-400 font-mono mt-0.5"></p>
+        </div>
+        <button onclick="closeItemInsightsModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-5 overflow-y-auto scrollbar-thin">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <span class="text-[11px] text-slate-400">Total Units Sold</span>
+            <p id="insUnitsSold" class="text-lg font-bold text-white font-mono mt-1">0</p>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <span class="text-[11px] text-slate-400">Gross Revenue</span>
+            <p id="insRevenue" class="text-lg font-bold text-white font-mono mt-1">Rs. 0</p>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <span class="text-[11px] text-slate-400">Net Profit</span>
+            <p id="insProfit" class="text-lg font-bold text-emerald-400 font-mono mt-1">+Rs. 0</p>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-950 border border-slate-800">
+            <span class="text-[11px] text-slate-400">Margin</span>
+            <p id="insMargin" class="text-lg font-bold text-emerald-400 font-mono mt-1">0%</p>
+          </div>
+        </div>
+
+        <!-- Price Change & Cost History Timeline -->
+        <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-semibold text-white flex items-center gap-2">
+              <i data-lucide="history" class="w-3.5 h-3.5 text-blue-400"></i>
+              <span>Price Changes & Inward Batch History</span>
+            </h4>
+            <span class="text-[10px] text-slate-400 font-mono">Store Ledger</span>
+          </div>
+
+          <div id="insPriceHistoryTimeline" class="space-y-2">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Velocity Statistics -->
+        <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+          <h4 class="text-xs font-semibold text-white flex items-center gap-2">
+            <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Velocity & Replenishment Rates</span>
+          </h4>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="text-slate-400 text-[10px]">Avg Units Per Bill</span>
+              <p id="insAvgPerBill" class="text-xs font-semibold text-white font-mono mt-0.5">1.8 Pcs</p>
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="text-slate-400 text-[10px]">Top Terminal Lane</span>
+              <p id="insTopTerminal" class="text-xs font-semibold text-blue-400 mt-0.5">Terminal 01 (64%)</p>
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="text-slate-400 text-[10px]">Depletion Run-Rate</span>
+              <p id="insStockRunRate" class="text-xs font-semibold text-amber-400 mt-0.5">~12 Days Remaining</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-5 py-3 border-t border-slate-800 bg-slate-900 flex justify-end">
+        <button onclick="closeItemInsightsModal()" class="btn-secondary text-xs">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: BARCODE SCANNER (CAMERA & IMAGE & QUICK TEST) ================= -->
+  <div id="barcodeScannerModal" class="fixed inset-0 z-[9999] modal-backdrop hidden items-center justify-center p-4" style="z-index: 9999;">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col">
+      <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-900">
+        <div class="flex items-center gap-2">
+          <i data-lucide="scan" class="w-4 h-4 text-blue-400"></i>
+          <div>
+            <h3 class="text-xs font-semibold text-white">Barcode Scanner</h3>
+            <p class="text-[10px] text-slate-400" id="scannerTargetLabel">Align barcode within the target frame</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeBarcodeScanner()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- File Protocol / Camera Notice -->
+      <div id="scannerProtocolWarning" class="hidden px-4 py-2 bg-amber-500/10 border-b border-amber-500/20 text-[11px] text-amber-300">
+        <p><strong>Note:</strong> Browsers require <code class="text-white font-mono">http://localhost:3000</code> for live webcam video. On local files, upload an image or click a test barcode below.</p>
+      </div>
+
+      <div class="relative bg-black flex flex-col items-center justify-center min-h-[260px] overflow-hidden">
+        <div id="scannerReader" class="w-full h-full min-h-[240px]"></div>
+        
+        <div id="scannerReticle" class="pointer-events-none absolute inset-x-8 top-8 bottom-8 border border-blue-500/80 rounded-lg flex flex-col justify-center items-center">
+          <div class="w-full h-0.5 bg-red-500 animate-laser"></div>
+          <span class="mt-auto mb-2 text-[10px] font-mono text-slate-300 bg-slate-950/80 px-2.5 py-0.5 rounded">Optical Detection</span>
+        </div>
+      </div>
+
+      <!-- Quick Scan Sample / Upload Toolbar -->
+      <div class="p-3 bg-slate-950 border-t border-slate-800 space-y-2">
+        <div class="flex items-center justify-between text-[11px] text-slate-400">
+          <span>Quick Barcode Triggers:</span>
+          <button type="button" onclick="document.getElementById('scannerFileInput').click()" class="text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">
+            <i data-lucide="image" class="w-3.5 h-3.5"></i>
+            <span>Upload Photo</span>
+          </button>
+          <input type="file" id="scannerFileInput" accept="image/*" class="hidden" onchange="handleScannerFile(this.files[0])">
+        </div>
+
+        <div class="grid grid-cols-3 gap-1.5 text-xs">
+          <button type="button" onclick="simulateBarcodeScan('8901001')" class="py-1.5 px-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-[11px] text-center truncate" title="Anchor Milk">
+            8901001 (Milk)
+          </button>
+          <button type="button" onclick="simulateBarcodeScan('8901002')" class="py-1.5 px-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-[11px] text-center truncate" title="Dilmah Tea">
+            8901002 (Tea)
+          </button>
+          <button type="button" onclick="simulateBarcodeScan('8901003')" class="py-1.5 px-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-[11px] text-center truncate" title="Munchee Biscuit">
+            8901003 (Snack)
+          </button>
+        </div>
+      </div>
+
+      <div class="px-5 py-3 border-t border-slate-800 bg-slate-900 flex items-center justify-between">
+        <button type="button" onclick="closeBarcodeScanner()" class="btn-secondary text-xs">
+          Cancel
+        </button>
+        <button type="button" onclick="simulateRandomBarcodeScan()" class="btn-secondary text-xs text-blue-400">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          <span>Generate New EAN-13</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PRODUCT EDIT / CREATE ================= -->
+  <div id="productEditModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-750 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh]">
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900">
+        <h3 id="productModalTitle" class="text-sm font-semibold text-white flex items-center gap-2">
+          <i data-lucide="edit-3" class="w-4 h-4 text-blue-400"></i>
+          <span>Edit Product Details</span>
+        </h3>
+        <button onclick="closeProductEditModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="productEditForm" class="p-5 space-y-4 overflow-y-auto scrollbar-thin">
+        <input type="hidden" id="editOriginalSku">
+
+        <div>
+          <label class="form-label">SKU / Barcode *</label>
+          <div class="flex gap-2">
+            <input type="text" id="editSku" required placeholder="8901001" class="form-input text-xs font-mono flex-1">
+            <button type="button" onclick="openBarcodeScanner('editSku')" class="btn-secondary text-xs">
+              <i data-lucide="scan" class="w-3.5 h-3.5"></i>
+              <span>Scan</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Product Title / Name *</label>
+          <input type="text" id="editName" required placeholder="Anchor Full Cream Milk Carton 1L" class="form-input text-xs">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="form-label">Category</label>
+            <input type="text" id="editCategory" placeholder="Dairy, Snacks..." class="form-input text-xs">
+          </div>
+          <div>
+            <label class="form-label">Unit of Measure</label>
+            <select id="editUnit" class="form-input text-xs">
+              <option value="Pcs">Pcs (Pieces)</option>
+              <option value="Kg">Kg (Kilograms)</option>
+              <option value="Pack">Pack</option>
+              <option value="Bottle">Bottle</option>
+              <option value="Bags">Bags</option>
+              <option value="Box">Box</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 p-3.5 rounded-lg bg-slate-950 border border-slate-800">
+          <div>
+            <label class="form-label">
+              Purchase Cost (LKR) *
+              <span class="text-[10px] text-slate-400 block font-normal">Confidential (Hidden from Cashiers)</span>
+            </label>
+            <input type="number" step="0.01" min="0" id="editCostPrice" required placeholder="0.00" class="form-input text-xs font-mono">
+          </div>
+          <div>
+            <label class="form-label">
+              Selling Retail Price (LKR) *
+              <span class="text-[10px] text-slate-400 block font-normal">Customer Price at Register</span>
+            </label>
+            <input type="number" step="0.01" min="0" id="editSellPrice" required placeholder="0.00" class="form-input text-xs font-mono">
+          </div>
+        </div>
+
+        <div id="editMarginPill" class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 flex items-center justify-between font-medium">
+          <span>Expected Profit: <strong id="editProfitCalc">Rs. 0.00</strong></span>
+          <span id="editMarginCalc">Margin: 0.0%</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="form-label">Current Stock Count</label>
+            <input type="number" min="0" id="editStock" required placeholder="10" class="form-input text-xs font-mono">
+          </div>
+          <div>
+            <label class="form-label">Low Stock Alert Level</label>
+            <input type="number" min="0" id="editMinStock" required placeholder="5" class="form-input text-xs font-mono">
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+          <button type="button" id="btnDeleteProduct" onclick="deleteCurrentProduct()" class="btn-danger text-xs">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Delete Item</span>
+          </button>
+
+          <div class="flex items-center gap-2 ml-auto">
+            <button type="button" onclick="closeProductEditModal()" class="btn-secondary text-xs">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary text-xs">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: BUYING LOG / INWARD STOCK WITH BILL PHOTO ================= -->
+  <div id="purchaseLogModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-750 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh]">
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900">
+        <div>
+          <h3 class="text-sm font-semibold text-white">Record Inward Stock & Supplier Invoice</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Receive supplier batch, update catalog stock, and attach bill photo</p>
+        </div>
+        <button onclick="closePurchaseModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="purchaseLogForm" class="p-5 space-y-4 overflow-y-auto scrollbar-thin">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="form-label">Supplier / Vendor Name *</label>
+            <input type="text" id="purchSupplier" required placeholder="Fonterra Brands Lanka" class="form-input text-xs">
+          </div>
+          <div>
+            <label class="form-label">Invoice / Bill # *</label>
+            <input type="text" id="purchInvoiceNum" required placeholder="INV-2026-8812" class="form-input text-xs font-mono">
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Select Product to Restock *</label>
+          <div class="flex gap-2">
+            <select id="purchProductSelect" required class="form-input text-xs flex-1">
+              <!-- Dynamically populated via JS -->
+            </select>
+            <button type="button" onclick="openBarcodeScanner('purchSelect')" class="btn-secondary text-xs" title="Scan Barcode to Select">
+              <i data-lucide="scan" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="form-label">Quantity Received *</label>
+            <input type="number" min="1" id="purchQuantity" required value="20" class="form-input text-xs font-mono">
+          </div>
+          <div>
+            <label class="form-label">Unit Purchase Cost (LKR) *</label>
+            <input type="number" step="0.01" min="0" id="purchUnitCost" required placeholder="420.00" class="form-input text-xs font-mono">
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
+          <span class="text-slate-400 font-medium">Total Inward Purchase Cost:</span>
+          <span id="purchTotalCalc" class="text-sm font-bold font-mono text-emerald-400">Rs. 0.00</span>
+        </div>
+
+        <div>
+          <label class="form-label">Attach Paper Bill Photo / Scan (Optional)</label>
+          <div class="border border-dashed border-slate-700 hover:border-blue-500 rounded-lg p-4 text-center cursor-pointer transition bg-slate-950/40" onclick="document.getElementById('purchPhotoInput').click()">
+            <input type="file" id="purchPhotoInput" accept="image/*" capture="environment" class="hidden">
+            <div id="purchPhotoPlaceholder" class="space-y-1">
+              <i data-lucide="image" class="w-5 h-5 mx-auto text-blue-400"></i>
+              <p class="text-xs font-medium text-slate-200">Tap to upload bill picture or snap with camera</p>
+              <p class="text-[11px] text-slate-500">JPG, PNG, WebP supported</p>
+            </div>
+            <div id="purchPhotoPreviewContainer" class="hidden relative">
+              <img id="purchPhotoPreview" src="" alt="Bill preview" class="max-h-36 mx-auto rounded-md object-contain">
+              <button type="button" onclick="event.stopPropagation(); removePurchPhoto();" class="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full text-xs" title="Remove photo">
+                <i data-lucide="x" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+          <button type="button" onclick="closePurchaseModal()" class="btn-secondary text-xs">
+            Cancel
+          </button>
+          <button type="submit" class="btn-primary text-xs">
+            Save Purchase & Update Stock
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: HIGH-RES BILL PHOTO VIEWER ================= -->
+  <div id="billPhotoModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4" onclick="closeBillPhotoModal()">
+    <div class="relative max-w-2xl max-h-[90vh] bg-slate-900 rounded-xl border border-slate-750 overflow-hidden flex flex-col shadow-2xl" onclick="event.stopPropagation()">
+      <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-900">
+        <div>
+          <h4 id="billPhotoTitle" class="text-xs font-semibold text-white">Supplier Bill Photo</h4>
+          <p id="billPhotoSub" class="text-[10px] text-slate-400 font-mono"></p>
+        </div>
+        <button onclick="closeBillPhotoModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="p-4 overflow-auto flex items-center justify-center bg-black/40">
+        <img id="billPhotoImage" src="" alt="Supplier Bill" class="max-h-[70vh] rounded-md object-contain">
+      </div>
+      <div class="px-5 py-3 border-t border-slate-800 bg-slate-900 flex justify-end">
+        <a id="billPhotoDownloadBtn" href="" download="supplier-bill.jpg" class="btn-primary text-xs">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span>Download Photo</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: THERMAL RECEIPT VIEWER ================= -->
+  <div id="receiptModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-750 w-full max-w-sm sm:max-w-md rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-900">
+        <h3 class="text-xs font-semibold text-white flex items-center gap-2">
+          <i data-lucide="receipt" class="w-4 h-4 text-blue-400"></i>
+          <span>Receipt Voucher</span>
+        </h3>
+        <button onclick="closeReceiptModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-5 overflow-y-auto bg-slate-100 text-slate-900 font-mono text-xs space-y-2 m-3 rounded-lg shadow-inner scrollbar-thin">
+        <div class="text-center border-b border-dashed border-slate-400 pb-2">
+          <p id="receiptModalStoreName" class="font-bold text-sm uppercase">SUMITHURU ENTERPRISES</p>
+          <p id="receiptModalAddress" class="text-[11px] text-slate-600">No. 42, Galle Road, Colombo 03, Sri Lanka</p>
+          <p id="receiptModalPhone" class="text-[11px] text-slate-600">Tel: +94 11 234 5678</p>
+        </div>
+
+        <div class="flex justify-between text-[11px] border-b border-dashed border-slate-400 pb-2">
+          <div>
+            <p>Inv: <span id="modalInvNum" class="font-bold">INV-001</span></p>
+            <p>Cashier: <span id="modalCashier">Amal</span></p>
+          </div>
+          <div class="text-right">
+            <p id="modalDate">2026-11-12</p>
+            <p>Lane: <span id="modalLane">01</span></p>
+          </div>
+        </div>
+
+        <div id="modalItemsList" class="space-y-1.5 border-b border-dashed border-slate-400 pb-2">
+          <!-- Injected items -->
+        </div>
+
+        <div class="space-y-1 text-right text-xs pt-1">
+          <div class="flex justify-between">
+            <span>Subtotal:</span>
+            <span id="modalSubtotal">Rs. 0</span>
+          </div>
+          <div class="flex justify-between text-slate-600">
+            <span>Discount:</span>
+            <span id="modalDiscount">Rs. 0</span>
+          </div>
+          <div class="flex justify-between font-bold text-sm border-t border-dashed border-slate-400 pt-1">
+            <span>NET TOTAL:</span>
+            <span id="modalTotal">Rs. 0</span>
+          </div>
+          <div class="flex justify-between text-[11px] text-slate-600">
+            <span>Paid (<span id="modalPayment">Cash</span>):</span>
+            <span id="modalTendered">Rs. 0</span>
+          </div>
+          <div class="flex justify-between text-[11px] text-slate-600">
+            <span>Change:</span>
+            <span id="modalChange">Rs. 0</span>
+          </div>
+        </div>
+
+        <div class="text-center text-[10px] text-slate-500 pt-2 border-t border-dashed border-slate-400">
+          <p id="receiptModalFooter">Thank You For Shopping With Us!</p>
+          <p>Sumithuru POS System</p>
+        </div>
+      </div>
+
+      <div class="px-5 py-3 border-t border-slate-800 bg-slate-900 flex justify-end">
+        <button onclick="closeReceiptModal()" class="btn-secondary text-xs">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SUPABASE SQL SETUP SCRIPT ================= -->
+  <div id="sqlSetupModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-3xl w-full p-0 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900">
+        <div>
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <i data-lucide="database" class="w-4 h-4 text-emerald-400"></i>
+            <span>Supabase 1-Click Database Setup SQL</span>
+          </h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">Copy and paste this script into your Supabase Dashboard > SQL Editor</p>
+        </div>
+        <button onclick="closeSqlModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+        <div class="p-3.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300">
+          <strong>⚡ Instructions:</strong> Log into <a href="https://supabase.com" target="_blank" class="underline font-bold text-white">supabase.com</a>, create a free project, click <strong>"SQL Editor"</strong> in the left sidebar, paste the code below, and click <strong>"Run"</strong>. That's all!
+        </div>
+
+        <div class="relative">
+          <button onclick="copySqlScript()" id="btnCopySql" class="absolute top-3 right-3 px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow transition">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span id="copySqlText">Copy SQL</span>
+          </button>
+          <pre id="sqlScriptContent" class="bg-slate-950 p-4 rounded-xl text-[11px] font-mono text-slate-300 overflow-x-auto border border-slate-800 select-all"></pre>
+        </div>
+      </div>
+
+      <div class="px-6 py-3 border-t border-slate-800 bg-slate-900 flex justify-end gap-3">
+        <button onclick="closeSqlModal()" class="btn-secondary text-xs">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js?v=6.5"></script>
+</body>
+</html>
