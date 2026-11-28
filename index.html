@@ -142,7 +142,7 @@
       <a href="#terminals" data-tab="terminals" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
         <i data-lucide="monitor" class="w-4 h-4 flex-shrink-0 text-slate-400"></i>
         <span class="sidebar-text truncate">POS Terminals</span>
-        <span id="badgeActiveTerminals" class="sidebar-text ml-auto px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">3 Online</span>
+        <span id="badgeActiveTerminals" class="sidebar-text ml-auto px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">1 Online</span>
       </a>
 
       <a href="#analytics" data-tab="analytics" class="nav-item flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
@@ -170,16 +170,16 @@
     </div>
 
     <!-- Owner Profile Footer Badge -->
-    <div id="ownerProfileBtn" onclick="openOwnerProfileModal()" class="p-3.5 border-t border-slate-800 bg-slate-900/90 hover:bg-slate-800 cursor-pointer flex items-center justify-between transition group" title="Store Owner Profile & Security">
+    <div id="ownerProfileBtn" onclick="openOwnerProfileModal()" class="p-3.5 border-t border-slate-800 bg-slate-900/90 hover:bg-slate-800 cursor-pointer flex items-center justify-between transition group" title="Store Owner Profile & Settings">
       <div class="flex items-center space-x-3 overflow-hidden">
         <div id="ownerAvatarCircle" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-400 font-bold text-xs flex-shrink-0 group-hover:border-blue-500 transition-colors">
-          SJ
+          SO
         </div>
         <div class="sidebar-text truncate">
-          <p id="ownerDisplayName" class="text-xs font-semibold text-white leading-tight truncate">Sunil Jayawardena</p>
+          <p id="ownerDisplayName" class="text-xs font-semibold text-white leading-tight truncate">Store Owner</p>
           <p id="ownerDisplayLocation" class="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>Overseas Admin (UK)</span>
+            <span>Back-Office Admin (Sri Lanka)</span>
           </p>
         </div>
       </div>
@@ -201,7 +201,7 @@
           <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5 flex-wrap">
             <span id="headerStoreNameTop" class="hidden"></span>
             <span id="marketTimeDisplay" class="font-mono text-slate-300">
-              Colombo: 12:30:00 PM | London: 07:00:00 AM
+              Colombo: --:--:--
             </span>
             <span>•</span>
             <span id="cloudSyncBadgeTop" class="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-[11px] font-medium flex items-center gap-1.5 cursor-pointer hover:bg-slate-750 transition" onclick="switchTab('settings')" title="Click to view Cloud Synchronization Settings">
@@ -209,9 +209,9 @@
               <span>Local Mode</span>
             </span>
             <span>•</span>
-            <span class="text-emerald-400 font-medium flex items-center gap-1">
+            <span id="terminalsOnlineTopBadge" class="text-emerald-400 font-medium flex items-center gap-1">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              Terminals Online
+              <span id="terminalsOnlineTopText">1 Terminal Online</span>
             </span>
           </div>
         </div>
@@ -229,37 +229,11 @@
           <span>Record Inward Bill</span>
         </button>
 
-        <!-- Notification Center Bell & Dropdown -->
-        <div class="relative">
-          <button id="btnNotificationBell" onclick="toggleNotificationDropdown()" class="relative p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 rounded-lg transition" title="Live Sync & Sales Notifications">
-            <i data-lucide="bell" class="w-4 h-4"></i>
-            <span id="notifBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-red-500/30">0</span>
-          </button>
-
-          <!-- Dropdown Activity Panel -->
-          <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-50 overflow-hidden ring-1 ring-slate-800">
-            <div class="px-4 py-3 bg-slate-850 border-b border-slate-800 flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <i data-lucide="bell" class="w-4 h-4 text-blue-400"></i>
-                <h4 class="text-xs font-bold text-white uppercase tracking-wider">Live Activity Feed</h4>
-              </div>
-              <button onclick="clearNotifications()" class="text-[11px] text-slate-400 hover:text-red-400 transition">Clear all</button>
-            </div>
-            <div id="notificationList" class="max-h-72 overflow-y-auto divide-y divide-slate-800/60 p-1 scrollbar-thin">
-              <div class="p-6 text-center text-xs text-slate-500 flex flex-col items-center justify-center gap-2">
-                <i data-lucide="bell-off" class="w-5 h-5 text-slate-600"></i>
-                <span>No new notifications</span>
-              </div>
-            </div>
-            <div class="px-4 py-2.5 bg-slate-900/90 border-t border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
-              <span class="flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Supabase Live Sync active</span>
-              </span>
-              <span class="text-emerald-400/90 font-medium">Free Tier ($0/mo)</span>
-            </div>
-          </div>
-        </div>
+        <!-- Notification Center Bell -->
+        <button id="btnNotificationBell" onclick="toggleNotificationDropdown()" class="relative p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 rounded-lg transition" title="Live Sync & Sales Notifications">
+          <i data-lucide="bell" class="w-4 h-4"></i>
+          <span id="notifBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-red-500/30">0</span>
+        </button>
 
         <button id="refreshDataBtn" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 rounded-lg transition" title="Refresh Data">
           <i data-lucide="rotate-cw" class="w-4 h-4"></i>
@@ -267,21 +241,45 @@
       </div>
     </header>
 
+    <!-- Global Universal Notification Dropdown (Mobile + Desktop Responsive Overlay) -->
+    <div id="notificationDropdown" class="hidden fixed top-14 right-2 sm:right-6 md:top-14 md:right-8 w-[calc(100vw-1rem)] max-w-sm sm:max-w-md bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-50 overflow-hidden ring-1 ring-slate-800">
+      <div class="px-4 py-3 bg-slate-850 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i data-lucide="bell" class="w-4 h-4 text-blue-400"></i>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider">Live Activity Feed</h4>
+        </div>
+        <button onclick="clearNotifications()" class="text-[11px] text-slate-400 hover:text-red-400 transition">Clear all</button>
+      </div>
+      <div id="notificationList" class="max-h-80 overflow-y-auto divide-y divide-slate-800/60 p-1 scrollbar-thin">
+        <div class="p-6 text-center text-xs text-slate-500 flex flex-col items-center justify-center gap-2">
+          <i data-lucide="bell-off" class="w-5 h-5 text-slate-600"></i>
+          <span>No new notifications</span>
+        </div>
+      </div>
+      <div class="px-4 py-2.5 bg-slate-900/90 border-t border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
+        <span class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Supabase Live Sync active</span>
+        </span>
+        <span class="text-emerald-400/90 font-medium">Free Tier ($0/mo)</span>
+      </div>
+    </div>
+
     <!-- Scrollable Workspace Tab Container -->
     <div class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-5 space-y-6 scrollbar-thin">
 
       <!-- ================= TAB: DASHBOARD ================= -->
       <section id="tab-dashboard" class="tab-pane space-y-5">
         
-        <!-- Low Stock Alert Banner -->
-        <div id="urgentAlertBox" class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <!-- Low Stock Alert Banner (Dynamically shown when products are low) -->
+        <div id="urgentAlertBox" class="hidden p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="flex items-center space-x-3">
             <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold flex-shrink-0">
               <i data-lucide="alert-triangle" class="w-4 h-4"></i>
             </div>
             <div>
-              <p class="text-xs sm:text-sm font-semibold text-white">2 Products Require Restocking</p>
-              <p class="text-xs text-slate-300">Anchor Fresh Milk 1L (4 left) and Keells Keeri Samba 5kg (3 left) are below reorder threshold.</p>
+              <p class="text-xs sm:text-sm font-semibold text-white">Products Require Restocking</p>
+              <p class="text-xs text-slate-300">Items below minimum stock threshold.</p>
             </div>
           </div>
           <button onclick="switchTab('inventory')" class="btn-secondary text-xs self-start sm:self-auto">
@@ -302,10 +300,10 @@
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold text-white tracking-tight font-mono" id="kpiRevenue">Rs. 184,520</span>
-              <span class="text-xs font-medium text-emerald-400">+14.2%</span>
+              <span class="text-2xl font-bold text-white tracking-tight font-mono" id="kpiRevenue">Rs. 0</span>
+              <span class="text-xs font-medium text-emerald-400">Live</span>
             </div>
-            <p class="text-[11px] text-slate-400 mt-1">Across 3 active store terminals</p>
+            <p class="text-[11px] text-slate-400 mt-1">Real-time synchronized sales</p>
           </div>
 
           <!-- Card 2: Net Profit -->
@@ -317,10 +315,10 @@
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold text-emerald-400 tracking-tight font-mono" id="kpiProfit">Rs. 42,850</span>
-              <span class="text-xs font-medium text-slate-300">23.2% Margin</span>
+              <span class="text-2xl font-bold text-emerald-400 tracking-tight font-mono" id="kpiProfit">Rs. 0</span>
+              <span class="text-xs font-medium text-slate-300">Revenue − COGS</span>
             </div>
-            <p class="text-[11px] text-slate-400 mt-1">Cost of Goods: <span id="kpiCogs" class="font-mono text-slate-300">Rs. 141,670</span></p>
+            <p class="text-[11px] text-slate-400 mt-1">Cost of Goods: <span id="kpiCogs" class="font-mono text-slate-300">Rs. 0</span></p>
           </div>
 
           <!-- Card 3: Orders Count -->
@@ -332,10 +330,10 @@
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold text-white tracking-tight font-mono" id="kpiOrdersCount">128</span>
-              <span class="text-xs text-slate-400">Avg: <span id="kpiAvgBill" class="font-mono text-slate-200">Rs. 1,441</span></span>
+              <span class="text-2xl font-bold text-white tracking-tight font-mono" id="kpiOrdersCount">0</span>
+              <span class="text-xs text-slate-400">Avg: <span id="kpiAvgBill" class="font-mono text-slate-200">Rs. 0</span></span>
             </div>
-            <p class="text-[11px] text-slate-400 mt-1">Pace: ~1 transaction every 3.8 mins</p>
+            <p class="text-[11px] text-slate-400 mt-1">Total customer checkout transactions</p>
           </div>
 
           <!-- Card 4: Terminal Status -->
@@ -347,10 +345,9 @@
               </span>
             </div>
             <div class="mt-2 flex items-baseline gap-2">
-              <span class="text-2xl font-bold text-white tracking-tight font-mono">3 / 3</span>
-              <span class="text-xs font-medium text-emerald-400">100% Online</span>
+              <span class="text-2xl font-bold text-white tracking-tight font-mono" id="terminalsOnlineTopBadge">POS Terminal</span>
             </div>
-            <p class="text-[11px] text-slate-400 mt-1">Cash in drawers: <span id="kpiCashDrawer" class="font-mono text-slate-200">Rs. 112,400</span></p>
+            <p class="text-[11px] text-slate-400 mt-1">Cash in drawers: <span id="kpiCashDrawer" class="font-mono text-slate-200">Rs. 0</span></p>
           </div>
         </div>
 
@@ -409,13 +406,13 @@
             <p class="text-xs text-slate-400 mt-0.5">Manage SKU barcodes, item names, supplier purchase costs, retail selling prices, and stock counts</p>
           </div>
 
-          <div class="flex items-center space-x-2">
-            <button onclick="openBarcodeScanner('search')" class="btn-secondary text-xs">
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="openBarcodeScanner('search')" class="btn-secondary text-xs flex-1 sm:flex-none justify-center">
               <i data-lucide="scan" class="w-4 h-4 text-blue-400"></i>
               <span>Scan Barcode</span>
             </button>
 
-            <button onclick="openProductEditModal(null)" class="btn-primary text-xs">
+            <button onclick="openProductEditModal(null)" class="btn-primary text-xs flex-1 sm:flex-none justify-center">
               <i data-lucide="plus" class="w-4 h-4"></i>
               <span>Add New Product</span>
             </button>
@@ -429,7 +426,7 @@
             <input type="text" id="inventorySearch" placeholder="Search by SKU / Barcode, Item Name, Category..." class="form-input pl-10 text-xs">
           </div>
           <div class="flex gap-2">
-            <select id="categoryFilter" class="form-input text-xs w-auto">
+            <select id="categoryFilter" class="form-input text-xs flex-1 sm:w-auto">
               <option value="ALL">All Categories</option>
               <option value="Dairy">Dairy</option>
               <option value="Beverages">Beverages</option>
@@ -438,7 +435,7 @@
               <option value="Personal Care">Personal Care</option>
               <option value="Household">Household</option>
             </select>
-            <button id="filterLowStockBtn" class="btn-secondary text-xs">
+            <button id="filterLowStockBtn" class="btn-secondary text-xs flex-shrink-0">
               <i data-lucide="filter" class="w-3.5 h-3.5 text-amber-400"></i>
               <span>Low Stock</span>
             </button>
@@ -479,7 +476,7 @@
           </div>
 
           <div class="flex items-center space-x-2">
-            <button onclick="openPurchaseModal()" class="btn-primary text-xs">
+            <button onclick="openPurchaseModal()" class="btn-primary text-xs w-full sm:w-auto justify-center">
               <i data-lucide="plus" class="w-4 h-4"></i>
               <span>Record Inward Stock / Bill</span>
             </button>
@@ -490,12 +487,12 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
             <span class="text-xs text-slate-400 font-medium">Total Stock Received (This Month)</span>
-            <p class="text-xl font-bold text-white font-mono mt-1" id="kpiTotalPurchases">Rs. 485,200</p>
-            <p class="text-xs text-slate-400 mt-0.5" id="kpiPurchaseOrdersCount">6 Purchase Invoices</p>
+            <p class="text-xl font-bold text-white font-mono mt-1" id="kpiTotalPurchases">Rs. 0</p>
+            <p class="text-xs text-slate-400 mt-0.5" id="kpiPurchaseOrdersCount">0 Purchase Invoices</p>
           </div>
           <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
             <span class="text-xs text-slate-400 font-medium">Stored Bill Photos</span>
-            <p class="text-xl font-bold text-blue-400 font-mono mt-1" id="kpiBillPhotosCount">6 Photos</p>
+            <p class="text-xl font-bold text-blue-400 font-mono mt-1" id="kpiBillPhotosCount">0 Photos</p>
             <p class="text-xs text-slate-400 mt-0.5">Attached paper invoice proofs</p>
           </div>
           <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
@@ -535,7 +532,7 @@
             <h3 class="text-base font-bold text-white">Sales Transactions & Receipts</h3>
             <p class="text-xs text-slate-400 mt-0.5">Complete chronological ledger of all customer transactions across all store terminals</p>
           </div>
-          <button onclick="exportSalesExcel()" class="btn-secondary text-xs">
+          <button onclick="exportSalesExcel()" class="btn-secondary text-xs w-full sm:w-auto justify-center">
             <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-400"></i>
             <span>Export Sales to Excel</span>
           </button>
@@ -544,18 +541,18 @@
         <!-- Filter Toolbar -->
         <div class="flex flex-col sm:flex-row gap-3">
           <input type="text" id="salesSearch" placeholder="Search by Invoice #, Customer name, Phone..." class="form-input text-xs flex-1">
-          <select id="terminalFilter" class="form-input text-xs w-auto">
-            <option value="ALL">All Terminals</option>
-            <option value="Terminal 01">Terminal 01</option>
-            <option value="Terminal 02">Terminal 02</option>
-            <option value="Terminal 03">Terminal 03</option>
-          </select>
-          <select id="paymentMethodFilter" class="form-input text-xs w-auto">
-            <option value="ALL">All Payments</option>
-            <option value="Cash">Cash</option>
-            <option value="Card">Visa / MasterCard</option>
-            <option value="QR">LankaQR</option>
-          </select>
+          <div class="flex gap-2">
+            <select id="terminalFilter" class="form-input text-xs flex-1 sm:w-auto">
+              <option value="ALL">All Terminals</option>
+              <option value="Counter Register (POS-01)">POS-01</option>
+            </select>
+            <select id="paymentMethodFilter" class="form-input text-xs flex-1 sm:w-auto">
+              <option value="ALL">All Payments</option>
+              <option value="Cash">Cash</option>
+              <option value="Card">Visa / Master</option>
+              <option value="QR">LankaQR</option>
+            </select>
+          </div>
         </div>
 
         <!-- Sales Ledger Table -->
@@ -1027,6 +1024,56 @@
             </div>
 
             <div id="supabaseFeedbackMsg" class="hidden text-xs p-3 rounded-lg"></div>
+
+            <!-- On-Demand Sequential Sync Command -->
+            <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4">
+              <div>
+                <h5 class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+                  <span>Sequential Remote Sync Command</span>
+                </h5>
+                <p class="text-[11px] text-slate-400 mt-0.5">Send an immediate sequential sync signal to the physical Windows POS counter while it is idle.</p>
+              </div>
+              <button id="btnRequestPosSync" type="button" onclick="requestImmediatePosSync()" class="btn-primary text-xs flex-shrink-0 flex items-center gap-2">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>⚡ Request Immediate POS Sync</span>
+              </button>
+            </div>
+
+            <!-- Free Tier 500 MB Storage Optimizer & Pruner -->
+            <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-3 mt-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h5 class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                    <span>Supabase Free Tier (500 MB) Optimizer & Cloud Retention</span>
+                  </h5>
+                  <p class="text-[11px] text-slate-400 mt-0.5">
+                    Prune older cloud transaction records to keep Supabase PostgreSQL permanently within the 500 MB free tier ($0/mo).
+                  </p>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 self-start sm:self-auto">Free Tier Unlimited</span>
+              </div>
+
+              <div class="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[11px] text-blue-300 leading-relaxed">
+                🔒 <strong>Permanent Local History Protected:</strong> Your physical Windows POS terminal permanently retains 100% of all historical sales, inventory logs, and customer receipts in its local password-encrypted SQLite database. Pruning older cloud records safely frees up your Supabase cloud database quota.
+              </div>
+
+              <div class="flex flex-wrap items-center gap-3 pt-1">
+                <div class="flex items-center gap-2">
+                  <label class="text-xs text-slate-300 font-medium">Keep In Cloud:</label>
+                  <select id="cloudRetentionDays" class="form-input text-xs py-1.5 px-3 w-44">
+                    <option value="30" selected>Last 30 Days (Recommended)</option>
+                    <option value="60">Last 60 Days</option>
+                    <option value="90">Last 90 Days</option>
+                  </select>
+                </div>
+                <button type="button" onclick="pruneCloudBills()" id="btnPruneCloudBills" class="btn-secondary text-xs text-rose-400 hover:text-rose-300 border-rose-900/50 hover:bg-rose-950/30 py-1.5 flex items-center gap-1.5">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  <span>Prune Older Cloud Bills Now</span>
+                </button>
+              </div>
+            </div>
           </div>
         </form>
       </section>
@@ -1064,11 +1111,11 @@
       <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900">
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-400 font-bold text-xs">
-            SJ
+            SO
           </div>
           <div>
-            <h3 class="text-sm font-semibold text-white">Owner Profile & Overseas Settings</h3>
-            <p class="text-[11px] text-slate-400">Credentials and abroad location synchronization</p>
+            <h3 class="text-sm font-semibold text-white">Store Owner & Back-Office Profile</h3>
+            <p class="text-[11px] text-slate-400">Credentials and office administration settings</p>
           </div>
         </div>
         <button onclick="closeOwnerProfileModal()" class="text-slate-400 hover:text-white p-1">
@@ -1079,22 +1126,22 @@
       <form id="ownerProfileForm" class="p-5 space-y-4 overflow-y-auto scrollbar-thin">
         <div>
           <label class="form-label">Full Name *</label>
-          <input type="text" id="profOwnerName" required placeholder="Sunil Jayawardena" class="form-input text-xs font-medium">
+          <input type="text" id="profOwnerName" required placeholder="Store Owner" class="form-input text-xs font-medium">
         </div>
 
         <div>
           <label class="form-label">Email / Login ID *</label>
-          <input type="email" id="profOwnerEmail" required placeholder="owner@sumithuru.lk" class="form-input text-xs">
+          <input type="email" id="profOwnerEmail" required placeholder="admin@sumithuru.lk" class="form-input text-xs">
         </div>
 
         <div>
-          <label class="form-label">Overseas Contact / WhatsApp</label>
-          <input type="text" id="profOwnerPhone" placeholder="+44 7700 900077" class="form-input text-xs font-mono">
+          <label class="form-label">Contact / WhatsApp (Sri Lanka)</label>
+          <input type="text" id="profOwnerPhone" placeholder="+94 77 123 4567" class="form-input text-xs font-mono">
         </div>
 
         <div>
-          <label class="form-label">Current Overseas Location / City</label>
-          <input type="text" id="profOwnerLocation" placeholder="London, United Kingdom (GMT)" class="form-input text-xs">
+          <label class="form-label">Office Location / City</label>
+          <input type="text" id="profOwnerLocation" placeholder="Colombo, Sri Lanka" class="form-input text-xs">
         </div>
 
         <div>
@@ -1443,6 +1490,97 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: INWARD PURCHASE / BUY BILL HTML VOUCHER ================= -->
+  <div id="purchaseVoucherModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-750 w-full max-w-lg rounded-xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh]">
+      <!-- Header -->
+      <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-850">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-white uppercase tracking-wider">Inward Goods Receipt Voucher</h3>
+            <p id="pvModalDate" class="text-[11px] text-slate-400 font-mono"></p>
+          </div>
+        </div>
+        <button onclick="closePurchaseVoucherModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Voucher Body (Dark Slate Modern UI) -->
+      <div class="p-5 space-y-4 overflow-y-auto scrollbar-thin text-xs">
+        <!-- Store & Supplier Banner -->
+        <div class="p-3.5 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
+          <div>
+            <p class="text-[10px] text-slate-400 uppercase font-semibold">Supplier / Vendor</p>
+            <p id="pvModalSupplier" class="text-sm font-bold text-white mt-0.5"></p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] text-slate-400 uppercase font-semibold">Bill / Invoice No.</p>
+            <p id="pvModalInvNum" class="text-sm font-bold text-blue-400 font-mono mt-0.5"></p>
+          </div>
+        </div>
+
+        <!-- Inward Details Table -->
+        <div class="rounded-lg border border-slate-800 overflow-hidden bg-slate-950/60">
+          <table class="w-full text-left">
+            <thead class="bg-slate-850 border-b border-slate-800 text-[11px] text-slate-400">
+              <tr>
+                <th class="p-2.5">Item Description</th>
+                <th class="p-2.5 text-center">Inward Qty</th>
+                <th class="p-2.5 text-right">Unit Cost</th>
+                <th class="p-2.5 text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody id="pvModalItemsBody" class="divide-y divide-slate-800 text-slate-200">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Totals & Summary -->
+        <div class="p-3.5 rounded-lg bg-slate-950 border border-slate-800 space-y-1.5 font-mono">
+          <div class="flex justify-between text-slate-400 text-xs">
+            <span>Payment Status:</span>
+            <span id="pvModalStatus" class="text-emerald-400 font-medium">Recorded & Added to Stock</span>
+          </div>
+          <div class="flex justify-between text-slate-400 text-xs">
+            <span>Entry Channel:</span>
+            <span class="text-slate-300">Web Back-Office ERP</span>
+          </div>
+          <div class="pt-2 border-t border-slate-800 flex justify-between items-center text-sm">
+            <span class="font-bold text-white">Grand Total (LKR):</span>
+            <span id="pvModalTotal" class="font-bold text-emerald-400 text-base">Rs. 0.00</span>
+          </div>
+        </div>
+
+        <!-- Photo Link if Attached -->
+        <div id="pvModalPhotoSection" class="hidden p-3 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="image" class="w-4 h-4 text-blue-400"></i>
+            <span class="text-slate-300">Attached Paper Bill Photo</span>
+          </div>
+          <button id="pvModalViewPhotoBtn" type="button" class="btn-secondary text-xs py-1 px-2.5">
+            View Photo
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="px-5 py-3 border-t border-slate-800 bg-slate-850 flex items-center justify-between">
+        <button onclick="window.print()" type="button" class="btn-secondary text-xs">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <span>Print Voucher</span>
+        </button>
+        <button onclick="closePurchaseVoucherModal()" type="button" class="btn-primary text-xs">
+          Close
+        </button>
+      </div>
     </div>
   </div>
 

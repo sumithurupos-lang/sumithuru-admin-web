@@ -32,232 +32,18 @@ const DEFAULT_SETTINGS = {
 };
 
 const DEFAULT_OWNER = {
-  name: "Sunil Jayawardena",
-  role: "Store Owner / Principal",
-  email: "owner@sumithuru.lk",
-  phone: "+44 7700 900077",
-  location: "London, United Kingdom (GMT+0)",
+  name: "Store Owner",
+  role: "Store Owner / Back-Office Manager",
+  email: "admin@sumithuru.lk",
+  phone: "+94 77 123 4567",
+  location: "Colombo, Sri Lanka",
   pin: "1234"
 };
 
-const DEFAULT_PRODUCTS = [
-  {
-    sku: '8901001',
-    name: 'Anchor Full Cream Milk Carton 1L',
-    category: 'Dairy',
-    costPrice: 420.00,
-    sellPrice: 520.00,
-    stock: 4,
-    minStock: 10,
-    unit: 'Pcs',
-    priceHistory: [
-      { date: '2026-10-01', cost: 390.00, sell: 490.00, note: 'Initial Stock Inward' },
-      { date: '2026-10-25', cost: 420.00, sell: 520.00, note: 'Distributor Price Adjustment' }
-    ]
-  },
-  {
-    sku: '8901002',
-    name: 'Dilmah Ceylon Highland Tea 400g',
-    category: 'Beverages',
-    costPrice: 1180.00,
-    sellPrice: 1450.00,
-    stock: 32,
-    minStock: 8,
-    unit: 'Pcs',
-    priceHistory: [
-      { date: '2026-09-15', cost: 1100.00, sell: 1350.00, note: 'Quarterly Wholesale Contract' },
-      { date: '2026-11-01', cost: 1180.00, sell: 1450.00, note: 'Tea Auction Price Increase' }
-    ]
-  },
-  {
-    sku: '8901003',
-    name: 'Munchee Super Cream Cracker 500g',
-    category: 'Snacks',
-    costPrice: 425.00,
-    sellPrice: 525.00,
-    stock: 28,
-    minStock: 15,
-    unit: 'Pcs',
-    priceHistory: [
-      { date: '2026-10-10', cost: 425.00, sell: 525.00, note: 'Supplier Direct Batch' }
-    ]
-  },
-  {
-    sku: '8901004',
-    name: 'Keells Keeri Samba Rice 5kg',
-    category: 'Grains',
-    costPrice: 1420.00,
-    sellPrice: 1650.00,
-    stock: 3,
-    minStock: 10,
-    unit: 'Bags',
-    priceHistory: [
-      { date: '2026-09-20', cost: 1350.00, sell: 1550.00, note: 'Maha Season Harvest' },
-      { date: '2026-10-28', cost: 1420.00, sell: 1650.00, note: 'National Price Revision' }
-    ]
-  },
-  {
-    sku: '8901005',
-    name: 'Maliban Gold Marie Biscuits 300g',
-    category: 'Snacks',
-    costPrice: 240.00,
-    sellPrice: 310.00,
-    stock: 45,
-    minStock: 12,
-    unit: 'Pcs',
-    priceHistory: [
-      { date: '2026-10-05', cost: 240.00, sell: 310.00, note: 'Promo Wholesale Lot' }
-    ]
-  },
-  {
-    sku: '8901006',
-    name: 'Sunlight Lemon Fresh Soap 110g',
-    category: 'Personal Care',
-    costPrice: 120.00,
-    sellPrice: 160.00,
-    stock: 64,
-    minStock: 20,
-    unit: 'Pcs',
-    priceHistory: [
-      { date: '2026-09-10', cost: 110.00, sell: 150.00, note: 'Unilever FMCG Promo' },
-      { date: '2026-10-15', cost: 120.00, sell: 160.00, note: 'Standard Retail Markup' }
-    ]
-  },
-  {
-    sku: '8901007',
-    name: 'Clogard Fresh Toothpaste 120g',
-    category: 'Personal Care',
-    costPrice: 210.00,
-    sellPrice: 280.00,
-    stock: 22,
-    minStock: 10,
-    unit: 'Pcs',
-    priceHistory: [
-      { date: '2026-10-12', cost: 210.00, sell: 280.00, note: 'Direct Distributor Supply' }
-    ]
-  }
-];
+const DEFAULT_PRODUCTS = [];
 
-// Initial Seed Buying Logs
-const DEFAULT_PURCHASES = [
-  {
-    id: 'purch-1',
-    date: '2026-11-12 14:30',
-    invoiceNum: 'PO-FON-8910',
-    supplier: 'Fonterra Brands Lanka Pvt Ltd',
-    itemSku: '8901001',
-    itemName: 'Anchor Full Cream Milk Carton 1L',
-    quantity: 50,
-    unitCost: 420.00,
-    totalCost: 21000.00,
-    photoData: null
-  },
-  {
-    id: 'purch-2',
-    date: '2026-11-10 11:15',
-    invoiceNum: 'PO-DLM-4421',
-    supplier: 'Ceylon Tea Traders (Dilmah Direct)',
-    itemSku: '8901002',
-    itemName: 'Dilmah Ceylon Highland Tea 400g',
-    quantity: 40,
-    unitCost: 1180.00,
-    totalCost: 47200.00,
-    photoData: null
-  },
-  {
-    id: 'purch-3',
-    date: '2026-11-08 16:45',
-    invoiceNum: 'PO-MLB-1029',
-    supplier: 'Maliban Biscuit Manufactories',
-    itemSku: '8901005',
-    itemName: 'Maliban Gold Marie Biscuits 300g',
-    quantity: 100,
-    unitCost: 240.00,
-    totalCost: 24000.00,
-    photoData: null
-  }
-];
-
-// Initial Sales Seed Data
-const DEFAULT_SALES = [
-  {
-    invoiceNum: 'INV-20261112-0128',
-    time: '20:34',
-    terminal: 'Terminal 01',
-    cashier: 'Amal Perera',
-    customer: 'Walk-in Retail Customer',
-    paymentMethod: 'Cash',
-    subtotal: 3500.00,
-    discount: 0,
-    total: 3500.00,
-    cogs: 2750.00,
-    profit: 750.00,
-    tendered: 4000.00,
-    change: 500.00,
-    items: [
-      { sku: '8901002', name: 'Dilmah Ceylon Highland Tea 400g', qty: 2, price: 1450.00, cost: 1180.00 },
-      { sku: '8901006', name: 'Sunlight Lemon Fresh Soap 110g', qty: 1, price: 160.00, cost: 120.00 },
-      { sku: '8901001', name: 'Anchor Full Cream Milk Carton 1L', qty: 1, price: 440.00, cost: 420.00 }
-    ]
-  },
-  {
-    invoiceNum: 'INV-20261112-0127',
-    time: '20:31',
-    terminal: 'Terminal 02',
-    cashier: 'Nimali Fernando',
-    customer: 'Saman Kumara (077 890 1234)',
-    paymentMethod: 'Card',
-    subtotal: 5125.00,
-    discount: 100.00,
-    total: 5025.00,
-    cogs: 3950.00,
-    profit: 1075.00,
-    tendered: 5025.00,
-    change: 0.00,
-    items: [
-      { sku: '8901004', name: 'Keells Keeri Samba Rice 5kg', qty: 2, price: 1650.00, cost: 1420.00 },
-      { sku: '8901003', name: 'Munchee Super Cream Cracker 500g', qty: 2, price: 525.00, cost: 425.00 },
-      { sku: '8901005', name: 'Maliban Gold Marie Biscuits 300g', qty: 2, price: 310.00, cost: 240.00 }
-    ]
-  },
-  {
-    invoiceNum: 'INV-20261112-0126',
-    time: '20:26',
-    terminal: 'Terminal 01',
-    cashier: 'Amal Perera',
-    customer: 'Walk-in Customer',
-    paymentMethod: 'Cash',
-    subtotal: 1560.00,
-    discount: 0,
-    total: 1560.00,
-    cogs: 1260.00,
-    profit: 300.00,
-    tendered: 2000.00,
-    change: 440.00,
-    items: [
-      { sku: '8901001', name: 'Anchor Full Cream Milk Carton 1L', qty: 3, price: 520.00, cost: 420.00 }
-    ]
-  },
-  {
-    invoiceNum: 'INV-20261112-0125',
-    time: '20:20',
-    terminal: 'Terminal 03',
-    cashier: 'Kasun Silva',
-    customer: 'Express Lane Customer',
-    paymentMethod: 'QR',
-    subtotal: 940.00,
-    discount: 0,
-    total: 940.00,
-    cogs: 720.00,
-    profit: 220.00,
-    tendered: 940.00,
-    change: 0.00,
-    items: [
-      { sku: '8901005', name: 'Maliban Gold Marie Biscuits 300g', qty: 2, price: 310.00, cost: 240.00 },
-      { sku: '8901007', name: 'Clogard Fresh Toothpaste 120g', qty: 1, price: 280.00, cost: 210.00 }
-    ]
-  }
-];
+const DEFAULT_PURCHASES = [];
+const DEFAULT_SALES = [];
 
 // Helper to load persistent state from localStorage
 function loadStoredItem(key, defaults) {
@@ -283,14 +69,15 @@ const state = {
   currency: 'Rs. ',
   activeTab: 'dashboard',
   soundEnabled: true,
-  simRunning: true,
+  simRunning: false,
   simInterval: null,
+  lowStockFilterActive: false,
   
-  // Real-time totals
-  totalRevenue: 184520,
-  totalProfit: 42850,
-  totalOrders: 128,
-  totalCogs: 141670,
+  // Real-time totals (dynamically calculated from synced store sales)
+  totalRevenue: 0,
+  totalProfit: 0,
+  totalOrders: 0,
+  totalCogs: 0,
   
   // Persistent Collections
   products: loadStoredItem(STORAGE_KEYS.PRODUCTS, DEFAULT_PRODUCTS),
@@ -302,44 +89,42 @@ const state = {
   // Terminals
   terminals: [
     {
-      id: 'term-1',
-      name: 'Terminal 01',
+      id: 'POS-01',
+      name: 'Counter Register (POS-01)',
       location: 'Front Counter - Lane A',
-      cashier: 'Amal Perera',
+      cashier: 'POS Counter Cashier',
       status: 'ONLINE',
-      ordersCount: 54,
-      cashInDrawer: 48200,
-      cardTotal: 29500,
-      grossTotal: 77700,
-      lastTxTime: 'Just now'
-    },
-    {
-      id: 'term-2',
-      name: 'Terminal 02',
-      location: 'Front Counter - Lane B',
-      cashier: 'Nimali Fernando',
-      status: 'ONLINE',
-      ordersCount: 46,
-      cashInDrawer: 41600,
-      cardTotal: 24800,
-      grossTotal: 66400,
-      lastTxTime: '2 mins ago'
-    },
-    {
-      id: 'term-3',
-      name: 'Terminal 03',
-      location: 'Express Basket Lane',
-      cashier: 'Kasun Silva',
-      status: 'ONLINE',
-      ordersCount: 28,
-      cashInDrawer: 22600,
-      cardTotal: 17820,
-      grossTotal: 40420,
-      lastTxTime: '4 mins ago'
+      ordersCount: 0,
+      cashInDrawer: 0,
+      cardTotal: 0,
+      grossTotal: 0,
+      lastTxTime: 'Just now',
+      lastHeartbeatRaw: new Date().toISOString()
     }
   ],
   notifications: []
 };
+
+// Purge legacy mock demo data from previous browser test runs if present
+(function purgeLegacyDemoStorage() {
+  try {
+    const rawProd = localStorage.getItem(STORAGE_KEYS.PRODUCTS);
+    if (rawProd && (rawProd.includes('Ceylon White Tea 200g') || rawProd.includes('Anchor Full Cream Milk Powder'))) {
+      localStorage.removeItem(STORAGE_KEYS.PRODUCTS);
+      state.products = [];
+    }
+    const rawSales = localStorage.getItem(STORAGE_KEYS.SALES);
+    if (rawSales && (rawSales.includes('INV-10941') || rawSales.includes('Amal Perera') || rawSales.includes('Sunil Jayawardena'))) {
+      localStorage.removeItem(STORAGE_KEYS.SALES);
+      state.sales = [];
+    }
+    const rawPurch = localStorage.getItem(STORAGE_KEYS.PURCHASES);
+    if (rawPurch && rawPurch.includes('Dilmah Plantation Ceylon')) {
+      localStorage.removeItem(STORAGE_KEYS.PURCHASES);
+      state.purchases = [];
+    }
+  } catch (e) {}
+})();
 
 // Audio Synthesizer (Chime & Barcode Scanner Beep)
 class AudioNotifier {
@@ -914,28 +699,76 @@ function handleIncomingItemUpdate(row) {
 
 function handleIncomingTerminalUpdate(row) {
   if (!row || !row.terminal_id) return;
-  const term = state.terminals.find(t => t.id === row.terminal_id);
+  let term = state.terminals.find(t => t.id === row.terminal_id);
+  const now = Date.now();
+  let isOnline = (row.status || 'ONLINE').toUpperCase() === 'ONLINE';
+  if (row.last_heartbeat) {
+    const diffMs = now - new Date(row.last_heartbeat).getTime();
+    if (diffMs > 75000) isOnline = false;
+  }
+  const newStatus = isOnline ? 'ONLINE' : 'OFFLINE';
+
   if (term) {
     const oldStatus = term.status;
-    term.status = row.status || 'ONLINE';
+    term.status = newStatus;
     term.ordersCount = parseInt(row.today_sales_count) || term.ordersCount;
     term.grossTotal = parseFloat(row.today_revenue) || term.grossTotal;
     term.cashInDrawer = parseFloat(row.drawer_cash) || term.cashInDrawer;
-    term.lastTxTime = 'Just now';
+    term.lastTxTime = row.last_heartbeat ? new Date(row.last_heartbeat).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
+    term.lastHeartbeatRaw = row.last_heartbeat || new Date().toISOString();
     term.cashier = row.cashier_name || term.cashier;
 
     if (oldStatus !== term.status) {
       showWebNotification(
         'Counter Terminal Status',
-        `${term.name} is now ${term.status}`,
+        term.status === 'ONLINE'
+          ? `🟢 ${term.name} is now ONLINE & Active.`
+          : `⚠️ ${term.name} is now OFFLINE. Counter shift ended or disconnected.`,
         'terminal'
       );
     }
+  } else {
+    state.terminals.push({
+      id: row.terminal_id,
+      name: row.terminal_name || `Counter Register (${row.terminal_id})`,
+      location: `Counter ${state.terminals.length + 1}`,
+      cashier: row.cashier_name || 'POS Cashier',
+      status: newStatus,
+      ordersCount: parseInt(row.today_sales_count) || 0,
+      cashInDrawer: parseFloat(row.drawer_cash) || 0,
+      cardTotal: 0,
+      grossTotal: parseFloat(row.today_revenue) || 0,
+      lastTxTime: row.last_heartbeat ? new Date(row.last_heartbeat).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now',
+      lastHeartbeatRaw: row.last_heartbeat || new Date().toISOString()
+    });
   }
   updateTerminalStatsFromSales();
   renderTerminalCards();
   renderKPICards();
 }
+
+// Automatic 15-second watchdog to detect if POS terminal stopped pinging / went offline
+function checkTerminalHeartbeats() {
+  const now = Date.now();
+  let changed = false;
+  (state.terminals || []).forEach(t => {
+    if (t.lastHeartbeatRaw) {
+      const diffMs = now - new Date(t.lastHeartbeatRaw).getTime();
+      const isOnline = diffMs < 75000;
+      const expectedStatus = isOnline ? 'ONLINE' : 'OFFLINE';
+      if (t.status !== expectedStatus) {
+        t.status = expectedStatus;
+        changed = true;
+      }
+    }
+  });
+  if (changed) {
+    renderTerminalCards();
+    renderKPICards();
+  }
+}
+setInterval(checkTerminalHeartbeats, 15000);
+
 
 async function testAndConnectSupabase() {
   const rawUrl = (document.getElementById('setSupabaseUrl')?.value || '').trim();
@@ -1189,10 +1022,9 @@ function startClock() {
     const now = new Date();
     try {
       const slTime = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Colombo', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-      const ukTime = now.toLocaleTimeString('en-US', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit', hour12: true });
-      display.innerHTML = `<span class="text-slate-200 font-medium">Colombo: ${slTime}</span> <span class="text-slate-500 mx-1.5">•</span> <span class="text-blue-400 font-medium">London: ${ukTime}</span>`;
+      display.innerHTML = `<span class="text-emerald-400 font-medium flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>🇱🇰 Colombo: ${slTime} (GMT+5:30)</span></span>`;
     } catch (e) {
-      display.textContent = now.toLocaleTimeString('en-US', { hour12: false }) + ' Local';
+      display.textContent = now.toLocaleTimeString('en-US', { hour12: false }) + ' Colombo';
     }
   }
   update();
@@ -1271,6 +1103,41 @@ function saveStoreSettingsForm() {
   initSupabaseClient();
   renderAllViews();
   showLivePill("Store Settings saved successfully!");
+
+  // Sync receipt & printer configuration to Supabase store_settings for Windows POS terminals
+  if (supabaseClient) {
+    const payload = {
+      id: 1,
+      store_name: state.settings.storeName,
+      address: state.settings.address,
+      phone: state.settings.phone,
+      email: state.settings.email,
+      tax_id: state.settings.taxId,
+      receipt_paper_width: state.settings.receiptPaperWidth,
+      receipt_border_style: state.settings.receiptBorderStyle,
+      receipt_header_align: state.settings.receiptHeaderAlign,
+      receipt_footer: state.settings.receiptFooter,
+      updated_at: new Date().toISOString()
+    };
+    supabaseClient.from('store_settings').upsert(payload).then(({ error }) => {
+      if (error) {
+        console.warn("Could not sync receipt settings to Supabase store_settings:", error);
+      } else {
+        console.log("Synced receipt configuration to Supabase store_settings successfully");
+        showWebNotification(
+          "Receipt & Printer Synced",
+          `Receipt format updated to ${state.settings.receiptPaperWidth} (${state.settings.receiptBorderStyle} border). Synced to Windows POS terminals.`,
+          'settings'
+        );
+      }
+    }).catch(e => console.warn(e));
+  } else {
+    showWebNotification(
+      "Receipt Settings Saved",
+      `Saved locally: ${state.settings.receiptPaperWidth} format (${state.settings.receiptBorderStyle} border). Connect Supabase to sync down to Windows POS.`,
+      'settings'
+    );
+  }
 }
 
 // Apply Owner Profile to UI
@@ -1427,11 +1294,27 @@ function renderAllViews() {
 }
 
 function updateBadges() {
-  const lowCount = state.products.filter(p => p.stock <= p.minStock).length;
+  const lowItems = state.products.filter(p => p.stock <= p.minStock);
+  const lowCount = lowItems.length;
   const badgeLow = document.getElementById('badgeLowStock');
   if (badgeLow) {
     badgeLow.textContent = `${lowCount} Low`;
     badgeLow.style.display = lowCount > 0 ? 'inline-block' : 'none';
+  }
+
+  // Update or hide Dashboard Low Stock Alert Banner dynamically
+  const alertBox = document.getElementById('urgentAlertBox');
+  if (alertBox) {
+    if (lowCount > 0) {
+      alertBox.classList.remove('hidden');
+      const sampleNames = lowItems.slice(0, 2).map(p => `${p.name} (${p.stock} left)`).join(' and ');
+      const titleEl = alertBox.querySelector('p.font-semibold');
+      const descEl = alertBox.querySelector('p.text-slate-300');
+      if (titleEl) titleEl.textContent = `${lowCount} ${lowCount === 1 ? 'Product Requires' : 'Products Require'} Restocking`;
+      if (descEl) descEl.textContent = `${sampleNames} ${lowItems.length > 2 ? `and ${lowItems.length - 2} more items` : ''} below reorder threshold.`;
+    } else {
+      alertBox.classList.add('hidden');
+    }
   }
 
   const badgeBuying = document.getElementById('badgeBuyingCount');
@@ -1440,7 +1323,7 @@ function updateBadges() {
   }
 }
 
-// Render KPI Cards
+// Render KPI Cards (Dynamically computed from real synced sales)
 function renderKPICards() {
   const revElem = document.getElementById('kpiRevenue');
   const profElem = document.getElementById('kpiProfit');
@@ -1449,24 +1332,53 @@ function renderKPICards() {
   const avgElem = document.getElementById('kpiAvgBill');
   const cashElem = document.getElementById('kpiCashDrawer');
 
-  if (revElem) revElem.textContent = formatCurrency(state.totalRevenue);
-  if (profElem) profElem.textContent = formatCurrency(state.totalProfit);
-  if (cogsElem) cogsElem.textContent = formatCurrency(state.totalCogs);
-  if (ordersElem) ordersElem.textContent = state.totalOrders;
+  let rev = 0;
+  let profit = 0;
+  let cogs = 0;
+  let orders = 0;
+
+  if (state.sales && state.sales.length > 0) {
+    orders = state.sales.length;
+    rev = state.sales.reduce((acc, s) => acc + (parseFloat(s.total) || 0), 0);
+    cogs = state.sales.reduce((acc, s) => acc + (parseFloat(s.cogs) || 0), 0);
+    profit = Math.max(0, rev - cogs);
+  } else {
+    rev = state.totalRevenue || 0;
+    profit = state.totalProfit || 0;
+    cogs = state.totalCogs || 0;
+    orders = state.totalOrders || 0;
+  }
+
+  if (revElem) revElem.textContent = formatCurrency(rev);
+  if (profElem) profElem.textContent = formatCurrency(profit);
+  if (cogsElem) cogsElem.textContent = formatCurrency(cogs);
+  if (ordersElem) ordersElem.textContent = orders;
   if (avgElem) {
-    const avg = state.totalOrders > 0 ? (state.totalRevenue / state.totalOrders) : 0;
+    const avg = orders > 0 ? (rev / orders) : 0;
     avgElem.textContent = formatCurrency(avg);
   }
   if (cashElem) {
-    const totalCash = state.terminals.reduce((acc, t) => acc + t.cashInDrawer, 0);
+    const totalCash = (state.terminals || []).reduce((acc, t) => acc + (parseFloat(t.cashInDrawer) || 0), 0);
     cashElem.textContent = formatCurrency(totalCash);
   }
 }
 
-// Render Live Ticker Feed
+// Render Live Ticker Feed (With clean empty state)
 function renderLiveFeed() {
   const container = document.getElementById('liveFeedContainer');
   if (!container) return;
+
+  if (!state.sales || state.sales.length === 0) {
+    container.innerHTML = `
+      <div class="p-8 text-center text-xs text-slate-500 flex flex-col items-center justify-center gap-2">
+        <i data-lucide="receipt" class="w-6 h-6 text-slate-600"></i>
+        <span class="text-slate-400 font-medium">No sales recorded yet</span>
+        <span class="text-[11px] text-slate-500">Live transactions from Windows POS counter will appear here in real-time.</span>
+      </div>
+    `;
+    if (window.lucide) { try { lucide.createIcons({ root: container }); } catch(e){} }
+    return;
+  }
 
   container.innerHTML = state.sales.slice(0, 6).map(sale => `
     <div onclick="openReceiptModal('${sale.invoiceNum}')" class="p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-slate-700 transition cursor-pointer flex items-center justify-between">
@@ -1498,17 +1410,46 @@ function renderTerminalCards() {
   const detailedGrid = document.getElementById('detailedTerminalGrid');
   const tableBody = document.getElementById('terminalTableBody');
 
+  const onlineCount = (state.terminals || []).filter(t => (t.status || '').toUpperCase() === 'ONLINE').length;
+
+  const badge = document.getElementById('badgeActiveTerminals');
+  if (badge) {
+    if (onlineCount > 0) {
+      badge.className = "sidebar-text ml-auto px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30";
+      badge.textContent = `${onlineCount} Online`;
+    } else {
+      badge.className = "sidebar-text ml-auto px-2 py-0.5 text-[10px] font-semibold rounded bg-rose-500/15 text-rose-400 border border-rose-500/30";
+      badge.textContent = "Offline";
+    }
+  }
+
+  const topBadge = document.getElementById('terminalsOnlineTopBadge');
+  if (topBadge) {
+    if (onlineCount > 0) {
+      topBadge.className = "text-emerald-400 font-medium flex items-center gap-1";
+      topBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>${onlineCount} ${onlineCount === 1 ? 'Terminal' : 'Terminals'} Online</span>`;
+    } else {
+      topBadge.className = "text-rose-400 font-medium flex items-center gap-1";
+      topBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span>Terminals Offline</span>`;
+    }
+  }
+
   if (overviewContainer) {
-    overviewContainer.innerHTML = state.terminals.map(t => `
-      <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+    overviewContainer.innerHTML = state.terminals.map(t => {
+      const isOnline = (t.status || '').toUpperCase() === 'ONLINE';
+      const dotColor = isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500';
+      const statusBadge = isOnline
+        ? `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>ONLINE</span>`
+        : `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>OFFLINE</span>`;
+
+      return `
+      <div class="p-4 rounded-xl bg-slate-950 border ${isOnline ? 'border-slate-800' : 'border-rose-900/40'}">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="w-2 h-2 rounded-full ${dotColor}"></span>
             <span class="text-xs font-semibold text-white">${t.name}</span>
           </div>
-          <span class="badge-success">
-            ${t.status}
-          </span>
+          ${statusBadge}
         </div>
         <p class="text-xs text-slate-400 mt-1">Cashier: <strong class="text-slate-200">${t.cashier}</strong></p>
         <div class="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
@@ -1516,15 +1457,23 @@ function renderTerminalCards() {
           <span class="font-semibold text-white font-mono">${formatCurrency(t.cashInDrawer)}</span>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
 
   if (detailedGrid) {
-    detailedGrid.innerHTML = state.terminals.map(t => `
-      <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 shadow-sm relative overflow-hidden">
+    detailedGrid.innerHTML = state.terminals.map(t => {
+      const isOnline = (t.status || '').toUpperCase() === 'ONLINE';
+      const dotColor = isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500';
+      const statusBadge = isOnline
+        ? `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>ONLINE</span>`
+        : `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>OFFLINE</span>`;
+
+      return `
+      <div class="p-5 rounded-xl bg-slate-900 border ${isOnline ? 'border-slate-800' : 'border-rose-900/40'} shadow-sm relative overflow-hidden">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-slate-800 text-blue-400 flex items-center justify-center font-bold">
+            <div class="w-8 h-8 rounded-lg ${isOnline ? 'bg-slate-800 text-blue-400' : 'bg-slate-800/80 text-slate-500'} flex items-center justify-center font-bold">
               <i data-lucide="monitor" class="w-4 h-4"></i>
             </div>
             <div>
@@ -1532,9 +1481,7 @@ function renderTerminalCards() {
               <p class="text-[11px] text-slate-400">${t.location}</p>
             </div>
           </div>
-          <span class="badge-success">
-            ${t.status}
-          </span>
+          ${statusBadge}
         </div>
 
         <div class="space-y-2 text-xs py-3 border-y border-slate-800">
@@ -1561,15 +1508,23 @@ function renderTerminalCards() {
           <span class="text-sm font-bold text-white font-mono">${formatCurrency(t.grossTotal)}</span>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
 
   if (tableBody) {
-    tableBody.innerHTML = state.terminals.map(t => `
+    tableBody.innerHTML = state.terminals.map(t => {
+      const isOnline = (t.status || '').toUpperCase() === 'ONLINE';
+      const dotColor = isOnline ? 'bg-emerald-500' : 'bg-rose-500';
+      const statusBadge = isOnline
+        ? `<span class="badge-success">ONLINE</span>`
+        : `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30">OFFLINE</span>`;
+
+      return `
       <tr>
         <td class="font-semibold text-white">
           <div class="flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>
             <span>${t.name}</span>
           </div>
         </td>
@@ -1579,10 +1534,11 @@ function renderTerminalCards() {
         <td class="text-blue-400 font-mono">${formatCurrency(t.cardTotal)}</td>
         <td class="text-white font-mono font-medium">${formatCurrency(t.grossTotal)}</td>
         <td>
-          <span class="badge-success">${t.status}</span>
+          ${statusBadge}
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
   }
 
   lucide.createIcons();
@@ -1601,8 +1557,25 @@ function renderInventoryTable() {
   const filtered = state.products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery) || p.sku.toLowerCase().includes(searchQuery);
     const matchesCat = selectedCat === 'ALL' || p.category === selectedCat;
-    return matchesSearch && matchesCat;
+    const matchesLow = !state.lowStockFilterActive || (p.stock <= p.minStock);
+    return matchesSearch && matchesCat && matchesLow;
   });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" class="text-center py-12 text-slate-500">
+          <div class="flex flex-col items-center justify-center gap-2">
+            <i data-lucide="package-open" class="w-8 h-8 text-slate-600"></i>
+            <span class="text-sm font-medium text-slate-400">No inventory products found</span>
+            <span class="text-xs text-slate-600">${state.lowStockFilterActive ? 'No products currently below their minimum stock threshold.' : 'Connect to Supabase cloud or click "Add New Product" to populate your catalog.'}</span>
+          </div>
+        </td>
+      </tr>
+    `;
+    lucide.createIcons();
+    return;
+  }
 
   tbody.innerHTML = filtered.map(p => {
     const unitProfit = p.sellPrice - p.costPrice;
@@ -1736,6 +1709,7 @@ function deleteCurrentProduct() {
   closeProductEditModal();
   renderAllViews();
   showLivePill(`Deleted: ${product.name}`);
+  showWebNotification('Product Deleted', `Permanently removed "${product.name}" (SKU: ${product.sku}) from inventory.`, 'inventory');
 }
 
 // ============================================================
@@ -1757,8 +1731,24 @@ function renderPurchasesTable() {
     photosElem.textContent = `${withPhotos} Attached Bills`;
   }
 
+  if (!state.purchases || state.purchases.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="text-center py-12 text-slate-500">
+          <div class="flex flex-col items-center justify-center gap-2">
+            <i data-lucide="receipt" class="w-8 h-8 text-slate-600"></i>
+            <span class="text-sm font-medium text-slate-400">No inward buying records found</span>
+            <span class="text-xs text-slate-600">Click "Record Inward Stock / Bill" to log supplier goods receipts and attach bill photos.</span>
+          </div>
+        </td>
+      </tr>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
   tbody.innerHTML = state.purchases.map((p, idx) => `
-    <tr>
+    <tr onclick="openPurchaseVoucherModal('${p.id || idx}')" class="cursor-pointer hover:bg-slate-800/40 transition">
       <td class="text-xs text-slate-400 font-mono">${p.date}</td>
       <td class="font-mono text-xs font-semibold text-blue-400">${p.invoiceNum}</td>
       <td class="font-medium text-white">${p.supplier}</td>
@@ -1767,7 +1757,7 @@ function renderPurchasesTable() {
         <span class="text-slate-400 ml-1">(+${p.quantity} @ ${formatCurrency(p.unitCost)})</span>
       </td>
       <td class="text-right font-mono font-medium text-emerald-400">${formatCurrency(p.totalCost)}</td>
-      <td class="text-center">
+      <td class="text-center" onclick="event.stopPropagation()">
         ${p.photoData ? `
           <button onclick="openBillPhotoModal(${idx})" class="btn-secondary text-xs py-1 px-2.5">
             <i data-lucide="image" class="w-3.5 h-3.5 text-blue-400"></i>
@@ -1777,7 +1767,7 @@ function renderPurchasesTable() {
           <span class="text-slate-500 text-xs">No Photo</span>
         `}
       </td>
-      <td class="text-center">
+      <td class="text-center" onclick="event.stopPropagation()">
         <button onclick="deletePurchaseLog('${p.id}')" class="p-1.5 text-slate-400 hover:text-red-400 transition" title="Delete purchase record">
           <i data-lucide="trash-2" class="w-4 h-4"></i>
         </button>
@@ -1786,6 +1776,66 @@ function renderPurchasesTable() {
   `).join('');
 
   lucide.createIcons();
+}
+
+// Inward Goods Receipt Voucher Modal Preview (Matching Modern HTML UI)
+function openPurchaseVoucherModal(idOrIndex) {
+  const p = state.purchases.find(item => item.id === idOrIndex || item.invoiceNum === idOrIndex) || state.purchases[idOrIndex];
+  if (!p) return;
+
+  const modal = document.getElementById('purchaseVoucherModal');
+  if (!modal) return;
+
+  const dateEl = document.getElementById('pvModalDate');
+  const suppEl = document.getElementById('pvModalSupplier');
+  const invEl = document.getElementById('pvModalInvNum');
+  const totalEl = document.getElementById('pvModalTotal');
+  const itemsBody = document.getElementById('pvModalItemsBody');
+
+  if (dateEl) dateEl.textContent = `${p.date || 'Today'} • Inward Stock Voucher`;
+  if (suppEl) suppEl.textContent = p.supplier || 'General Supplier';
+  if (invEl) invEl.textContent = p.invoiceNum || 'PO-000';
+  if (totalEl) totalEl.textContent = formatCurrency(p.totalCost || 0);
+
+  if (itemsBody) {
+    itemsBody.innerHTML = `
+      <tr>
+        <td class="p-2.5 font-medium text-white">
+          <div>${p.itemName || 'Stock Item'}</div>
+          <div class="text-[10px] text-slate-400 font-mono">SKU: ${p.itemSku || 'N/A'}</div>
+        </td>
+        <td class="p-2.5 text-center font-mono font-medium text-white">${p.quantity || 1}</td>
+        <td class="p-2.5 text-right font-mono text-slate-300">${formatCurrency(p.unitCost || 0)}</td>
+        <td class="p-2.5 text-right font-mono font-semibold text-emerald-400">${formatCurrency(p.totalCost || 0)}</td>
+      </tr>
+    `;
+  }
+
+  const photoSec = document.getElementById('pvModalPhotoSection');
+  const viewPhotoBtn = document.getElementById('pvModalViewPhotoBtn');
+  if (photoSec && viewPhotoBtn) {
+    if (p.photoData) {
+      photoSec.classList.remove('hidden');
+      viewPhotoBtn.onclick = () => {
+        closePurchaseVoucherModal();
+        const pIdx = state.purchases.indexOf(p);
+        openBillPhotoModal(pIdx >= 0 ? pIdx : 0);
+      };
+    } else {
+      photoSec.classList.add('hidden');
+    }
+  }
+
+  lucide.createIcons();
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closePurchaseVoucherModal() {
+  const modal = document.getElementById('purchaseVoucherModal');
+  if (!modal) return;
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
 }
 
 function openPurchaseModal() {
@@ -2061,6 +2111,22 @@ function renderSalesTable() {
     const matchesPay = payFilter === 'ALL' || s.paymentMethod === payFilter;
     return matchesSearch && matchesTerm && matchesPay;
   });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" class="text-center py-12 text-slate-500">
+          <div class="flex flex-col items-center justify-center gap-2">
+            <i data-lucide="receipt" class="w-8 h-8 text-slate-600"></i>
+            <span class="text-sm font-medium text-slate-400">No sales transactions found</span>
+            <span class="text-xs text-slate-600">Transactions processed on Windows POS terminals will automatically appear here in real-time.</span>
+          </div>
+        </td>
+      </tr>
+    `;
+    lucide.createIcons();
+    return;
+  }
 
   tbody.innerHTML = filtered.map(s => `
     <tr onclick="openReceiptModal('${s.invoiceNum}')" class="cursor-pointer">
@@ -2697,12 +2763,23 @@ function showLivePill(text) {
 // ============================================================
 // LIVE NOTIFICATION SYSTEM (Web Toasts & Bell Dropdown)
 // ============================================================
-function showWebNotification(title, message, type = 'sale') {
+const webNotifDedupeCache = new Map();
+
+function showWebNotification(title, message, type = 'sale', refId = null) {
+  // 20-second deduplication check to prevent duplicate toast/feed entries
+  const dedupeKey = `${title}|${message}`;
+  const now = Date.now();
+  if (webNotifDedupeCache.has(dedupeKey) && (now - webNotifDedupeCache.get(dedupeKey) < 20000)) {
+    return;
+  }
+  webNotifDedupeCache.set(dedupeKey, now);
+
   const notif = {
     id: 'notif-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
     title,
     message,
-    type, // 'sale', 'inventory', 'terminal', 'system'
+    type, // 'sale', 'inventory', 'terminal', 'settings'
+    refId: refId || '',
     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
     read: false
   };
@@ -2746,6 +2823,62 @@ function updateNotificationBadges() {
   });
 }
 
+function handleNotificationClick(id, type, refId, titleEncoded = '', msgEncoded = '') {
+  const title = decodeURIComponent(titleEncoded || '');
+  const message = decodeURIComponent(msgEncoded || '');
+
+  // Close notification dropdown
+  const dropdown = document.getElementById('notificationDropdown');
+  if (dropdown) dropdown.classList.add('hidden');
+
+  // Mark clicked notification as read
+  const notif = (state.notifications || []).find(n => n.id === id);
+  if (notif) notif.read = true;
+  updateNotificationBadges();
+
+  const combined = (title + ' ' + message + ' ' + (refId || '')).toLowerCase();
+
+  // Route to relevant tab and open/highlight record
+  if (type === 'sale' || combined.includes('inv-') || combined.includes('sale') || combined.includes('bill')) {
+    switchTab('sales');
+    const invMatch = message.match(/INV-[\w-]+/i) || title.match(/INV-[\w-]+/i);
+    if (invMatch) {
+      const invNum = invMatch[0];
+      const searchBox = document.getElementById('salesSearch');
+      if (searchBox) {
+        searchBox.value = invNum;
+        renderSalesTable();
+      }
+      setTimeout(() => openReceiptModal(invNum), 120);
+    }
+  } else if (type === 'inventory' || combined.includes('stock') || combined.includes('product') || combined.includes('sku') || combined.includes('price')) {
+    if (combined.includes('inward') || combined.includes('supplier') || combined.includes('po-')) {
+      switchTab('buying');
+      const poMatch = message.match(/PO-[\w-]+/i);
+      if (poMatch) {
+        setTimeout(() => openPurchaseVoucherModal(poMatch[0]), 120);
+      }
+    } else {
+      switchTab('inventory');
+      const skuMatch = message.match(/\b\d{4,14}\b/) || message.match(/SKU:\s*([\w-]+)/i);
+      if (skuMatch) {
+        const sku = skuMatch[1] || skuMatch[0];
+        const searchBox = document.getElementById('inventorySearch');
+        if (searchBox) {
+          searchBox.value = sku;
+          renderInventoryTable();
+        }
+      }
+    }
+  } else if (type === 'terminal' || combined.includes('terminal') || combined.includes('counter') || combined.includes('offline') || combined.includes('online')) {
+    switchTab('terminals');
+  } else if (type === 'settings' || combined.includes('printer') || combined.includes('receipt') || combined.includes('sync')) {
+    switchTab('settings');
+  } else {
+    switchTab('dashboard');
+  }
+}
+
 function renderToastCard(notif) {
   const stack = document.getElementById('toastNotificationStack');
   if (!stack) return;
@@ -2771,10 +2904,17 @@ function renderToastCard(notif) {
     iconName = 'monitor';
     iconColor = 'text-purple-400';
     badgeBg = 'bg-purple-500/15 text-purple-400 border-purple-500/30';
+  } else if (notif.type === 'settings') {
+    accentBorder = 'border-amber-500/40';
+    iconName = 'sliders';
+    iconColor = 'text-amber-400';
+    badgeBg = 'bg-amber-500/15 text-amber-400 border-amber-500/30';
   }
 
   const toast = document.createElement('div');
-  toast.className = `toast-item pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl border ${accentBorder} bg-slate-900/95 backdrop-blur-md shadow-2xl shadow-black/50 transition-all duration-300 transform translate-x-4 opacity-0`;
+  toast.className = `toast-item pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl border ${accentBorder} bg-slate-900/95 backdrop-blur-md shadow-2xl shadow-black/50 transition-all duration-300 transform translate-x-4 opacity-0 cursor-pointer hover:border-slate-500`;
+  toast.onclick = () => handleNotificationClick(notif.id, notif.type, notif.refId, encodeURIComponent(notif.title), encodeURIComponent(notif.message));
+
   toast.innerHTML = `
     <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${badgeBg} border">
       <i data-lucide="${iconName}" class="w-4 h-4 ${iconColor}"></i>
@@ -2786,7 +2926,7 @@ function renderToastCard(notif) {
       </div>
       <p class="text-xs text-slate-300 mt-0.5 leading-snug break-words">${notif.message}</p>
     </div>
-    <button onclick="this.closest('.toast-item').remove()" class="text-slate-400 hover:text-white p-0.5 rounded transition" title="Dismiss">
+    <button onclick="event.stopPropagation(); this.closest('.toast-item').remove()" class="text-slate-400 hover:text-white p-0.5 rounded transition" title="Dismiss">
       <i data-lucide="x" class="w-3.5 h-3.5"></i>
     </button>
   `;
@@ -2808,13 +2948,13 @@ function renderToastCard(notif) {
     existing[0].remove();
   }
 
-  // Auto dismiss after 5.5s
+  // Auto dismiss after 6s
   setTimeout(() => {
     if (toast.parentNode) {
       toast.classList.add('opacity-0', 'translate-x-4');
       setTimeout(() => toast.remove(), 300);
     }
-  }, 5500);
+  }, 6000);
 }
 
 function renderNotificationList() {
@@ -2838,9 +2978,10 @@ function renderNotificationList() {
     if (n.type === 'sale') { icon = 'receipt'; iconColor = 'text-emerald-400'; }
     else if (n.type === 'inventory') { icon = 'package'; iconColor = 'text-sky-400'; }
     else if (n.type === 'terminal') { icon = 'monitor'; iconColor = 'text-purple-400'; }
+    else if (n.type === 'settings') { icon = 'sliders'; iconColor = 'text-amber-400'; }
 
     return `
-      <div class="p-3 hover:bg-slate-800/50 transition flex items-start gap-2.5 ${n.read ? 'opacity-70' : 'bg-slate-850/40'}">
+      <div onclick="handleNotificationClick('${n.id}', '${n.type}', '${n.refId || ''}', '${encodeURIComponent(n.title)}', '${encodeURIComponent(n.message)}')" class="p-3 hover:bg-slate-800/60 transition cursor-pointer flex items-start gap-2.5 ${n.read ? 'opacity-70' : 'bg-slate-850/40'}">
         <div class="mt-0.5 p-1.5 rounded-lg bg-slate-800 border border-slate-700/60 ${iconColor} flex-shrink-0">
           <i data-lucide="${icon}" class="w-3.5 h-3.5"></i>
         </div>
@@ -2882,6 +3023,109 @@ function clearNotifications() {
   state.notifications = [];
   updateNotificationBadges();
   renderNotificationList();
+}
+
+// Request Immediate Sequential Sync on Windows POS from Web Admin
+async function requestImmediatePosSync() {
+  const btn = document.getElementById('btnRequestPosSync');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Sending Sync Signal...</span>`;
+    lucide.createIcons();
+  }
+
+  if (!supabaseClient) {
+    showWebNotification("Cloud Offline", "Supabase cloud is not connected. Connect cloud to send sync signals.", "terminal");
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span>⚡ Request Immediate POS Sync</span>`;
+      lucide.createIcons();
+    }
+    return;
+  }
+
+  try {
+    const { error } = await supabaseClient
+      .from('terminals')
+      .update({ pending_command: 'FORCE_SYNC' })
+      .neq('terminal_id', '');
+
+    if (error) throw error;
+
+    showWebNotification("Sync Signal Sent", "⚡ Immediate sync command sent to Windows POS terminal. Sync starting in 1-2 seconds...", "terminal");
+    if (btn) {
+      btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Signal Dispatched!</span>`;
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span>⚡ Request Immediate POS Sync</span>`;
+        lucide.createIcons();
+      }, 4000);
+    }
+  } catch (err) {
+    console.error("Failed to send force sync signal:", err);
+    showWebNotification("Sync Request Failed", err.message || "Could not reach terminal cloud queue", "terminal");
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span>⚡ Request Immediate POS Sync</span>`;
+      lucide.createIcons();
+    }
+  }
+}
+
+// Prune Older Cloud Bills to Maintain Free Tier (< 500 MB) Limit
+async function pruneCloudBills() {
+  const days = parseInt(document.getElementById('cloudRetentionDays')?.value || '30', 10);
+  const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+
+  const confirmed = confirm(
+    `Are you sure you want to prune cloud bills older than ${days} days?\n\n` +
+    `• All lifetime transactions remain safely stored in your Windows POS local password-encrypted SQLite database.\n` +
+    `• Only cloud sync copies in Supabase older than ${cutoffDate.slice(0, 10)} will be cleared to save free-tier quota.`
+  );
+  if (!confirmed) return;
+
+  const btn = document.getElementById('btnPruneCloudBills');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Pruning Cloud Database...</span>`;
+    lucide.createIcons();
+  }
+
+  if (!supabaseClient) {
+    showWebNotification("Cloud Offline", "Connect to Supabase cloud before pruning cloud storage.", "settings");
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="trash-2" class="w-3.5 h-3.5"></i><span>Prune Older Cloud Bills Now</span>`;
+      lucide.createIcons();
+    }
+    return;
+  }
+
+  try {
+    const { error } = await supabaseClient
+      .from('transactions')
+      .delete()
+      .lt('created_at', cutoffDate);
+
+    if (error) throw error;
+
+    showWebNotification(
+      "Cloud Cleaned Successfully",
+      `Cloud transactions older than ${days} days pruned. Local Windows POS database retains 100% full records.`,
+      "settings"
+    );
+    await fetchCloudData();
+  } catch (err) {
+    console.error("Prune cloud bills error:", err);
+    showWebNotification("Prune Failed", err.message || "Failed to prune cloud records", "settings");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="trash-2" class="w-3.5 h-3.5"></i><span>Prune Older Cloud Bills Now</span>`;
+      lucide.createIcons();
+    }
+  }
 }
 
 // Close notification dropdown when clicking outside
@@ -3003,8 +3247,13 @@ function setupEventListeners() {
 
     closeProductEditModal();
     renderAllViews();
-    showLivePill(`Saved product: ${name}`);
-    showWebNotification('Product Synced to Cloud', `${name} updated to ${formatCurrency(sellPrice)} (Stock: ${stock})`, 'inventory');
+    showLivePill(origSku ? `Updated: ${name}` : `Added: ${name}`);
+    showWebNotification(
+      origSku ? 'Product Price/Stock Adjusted' : 'New Product Added',
+      `${name} (SKU: ${sku}) — Retail: ${formatCurrency(sellPrice)} (Cost: ${formatCurrency(costPrice)}, Stock: ${stock})`,
+      'inventory',
+      sku
+    );
   });
 
   document.getElementById('editCostPrice')?.addEventListener('input', calculateLiveMargin);
@@ -3080,7 +3329,7 @@ function setupEventListeners() {
     closePurchaseModal();
     renderAllViews();
     showLivePill(`Restocked ${qty} ${product.unit} of ${product.name}!`);
-    showWebNotification('Inward Stock Recorded', `+${qty} ${product.name} from ${supplier} (${formatCurrency(totalCost)})`, 'inventory');
+    showWebNotification('Inward Stock Recorded', `+${qty} ${product.name} from ${supplier} (${formatCurrency(totalCost)})`, 'inventory', invoiceNum);
   });
 
   document.getElementById('purchQuantity')?.addEventListener('input', calculatePurchaseTotal);
@@ -3121,23 +3370,13 @@ function setupEventListeners() {
   document.getElementById('inventorySearch')?.addEventListener('input', renderInventoryTable);
   document.getElementById('categoryFilter')?.addEventListener('change', renderInventoryTable);
 
-  let lowStockOnly = false;
+  // Low Stock Filter Toggle (Works seamlessly with search and category filters)
   document.getElementById('filterLowStockBtn')?.addEventListener('click', (e) => {
-    lowStockOnly = !lowStockOnly;
-    e.currentTarget.classList.toggle('border-amber-500', lowStockOnly);
-    e.currentTarget.classList.toggle('bg-amber-500/20', lowStockOnly);
-
-    const tbody = document.getElementById('inventoryTableBody');
-    if (tbody) {
-      const rows = tbody.querySelectorAll('tr');
-      rows.forEach(r => {
-        if (lowStockOnly) {
-          r.style.display = r.classList.contains('bg-rose-950/15') ? '' : 'none';
-        } else {
-          r.style.display = '';
-        }
-      });
-    }
+    state.lowStockFilterActive = !state.lowStockFilterActive;
+    e.currentTarget.classList.toggle('border-amber-500', state.lowStockFilterActive);
+    e.currentTarget.classList.toggle('bg-amber-500/20', state.lowStockFilterActive);
+    e.currentTarget.classList.toggle('text-amber-400', state.lowStockFilterActive);
+    renderInventoryTable();
   });
 
   // Sales Search & Filters
